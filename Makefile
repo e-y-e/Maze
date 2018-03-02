@@ -3,7 +3,7 @@ TARGET ?= maze
 BUILD_DIR ?= ./build
 
 # Define the output files in terms of the input files.
-SRCS := main.c point.c node.c node_list.c maze.c
+SRCS := main.c point.c node_list.c maze.c
 OBJS := $(SRCS:%.c=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:%.o=%.d)
 

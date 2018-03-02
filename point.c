@@ -14,3 +14,8 @@ size_t point_distance(struct point_t a, struct point_t b)
 
     return dx * dx + dy * dy;
 }
+
+bool point_equal(struct point_t a, struct point_t b)
+{
+    return a.x == b.x && a.y == b.y;
+}

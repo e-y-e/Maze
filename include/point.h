@@ -2,6 +2,7 @@
 #define POINT_H
 
 
+#include <stdbool.h>
 #include <stddef.h>
 
 
@@ -19,6 +20,11 @@ struct point_t
  * square of the straight-line distance.
  */
 size_t point_distance(struct point_t, struct point_t);
+
+/**
+ * Determines if two points are equal to each other.
+ */
+bool point_equal(struct point_t, struct point_t);
 
 
 #endif // POINT_H

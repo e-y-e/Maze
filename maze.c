@@ -70,6 +70,51 @@ static void get_children(struct node_list_t* out, struct maze_t maze, struct nod
     }
 }
 
+/**
+ * Calculate the estimated cost of choosing a given node.
+ */
+static size_t cost_estimate(struct node_t node, struct maze_t maze)
+{
+    return node.path_cost + point_distance(node.point, maze.end);
+}
+
+/**
+ * Get the frontier index of the estimated best node to expand next in a given maze.
+ */
+static size_t get_best_node(struct node_list_t frontier, struct maze_t maze)
+{
+    // Assert that the frontier is not empty.
+    assert(frontier.length > 0);
+
+    // Store the best node index and its estimated cost.
+    size_t best_index = 0;
+    size_t best_cost = cost_estimate(*get_node(frontier, 0), maze);
+
+    size_t length = frontier.length;
+
+    // Store the current node index and its estimated cost.
+    size_t index = 1;
+    size_t cost = 0;
+    for (;;)
+    {
+        if (index >= length) break;
+
+        // Calculate the estimated cost of choosing the node at this index.
+        cost = cost_estimate(*get_node(frontier, index), maze);
+
+        // If necessary, update the best node.
+        if (cost < best_cost)
+        {
+            best_index = index;
+            best_cost = cost;
+        }
+
+        index++;
+    }
+
+    return best_index;
+}
+
 int make_maze(struct maze_t* out, struct maze_size_t size, struct point_t end, struct point_t start)
 {
     // Assert that the given points are within the maze.
@@ -110,5 +155,59 @@ void set_action(struct maze_t maze, enum action_t action, struct point_t point)
     else
     {
         maze.actions[index / 2].a = action;
+    }
+}
+
+void solve_maze(struct node_list_t* out, struct maze_t maze)
+{
+    // Define the maximum length for lists of nodes in the maze.
+    size_t max_length = maze.size.width * maze.size.height;
+
+    // Create the list that will contain all explored nodes.
+    struct node_list_t explored;
+    if (make_list(&explored, max_length) != 0) return;
+
+    // Create the list that will contain all nodes in the frontier.
+    struct node_list_t frontier;
+    if (make_list(&frontier, max_length) != 0) return;
+
+    // Store the index of the next node to expand.
+    size_t node_index = 0;
+
+    // Create the node that will represent the current end of the path.
+    struct node_t node = { maze.start, NULL, 0 };
+
+    // Insert the first node of the maze into the frontier.
+    insert_node(&frontier, node, 0);
+
+    for (;;)
+    {
+        if (frontier.length == 0) return;
+
+        // Get the next node to expand.
+        node_index = get_best_node(frontier, maze);
+        node = *get_node(frontier, node_index);
+
+        if (point_equal(node.point, maze.end)) break;
+
+        // Remove the node from the frontier.
+        remove_node(&frontier, node_index);
+
+        // Add the node to the list of explored nodes.
+        insert_node(&explored, node, explored.length);
+
+        // Generate the child nodes of the current node, appending them to the
+        // frontier.
+        get_children(&frontier, maze, get_node(explored, explored.length - 1));
+    }
+
+    struct node_t* parent;
+    for (;;)
+    {
+        parent = node.parent;
+        node.parent = out->nodes + out->length + 1;
+        insert_node(out, node, out->length);
+        if (parent == NULL) return;
+        node = *parent;
     }
 }

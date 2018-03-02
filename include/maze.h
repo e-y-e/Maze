@@ -46,7 +46,7 @@ void set_action(struct maze_t, enum action_t, struct point_t);
 /**
  * Solves a given maze using A* search.
  */
-struct node_list_t* solve_maze(struct maze_t);
+void solve_maze(struct node_list_t*, struct maze_t);
 
 
 #endif // MAZE_H
