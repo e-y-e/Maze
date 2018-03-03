@@ -115,11 +115,11 @@ static size_t get_best_node(struct node_list_t frontier, struct maze_t maze)
     return best_index;
 }
 
-int make_maze(struct maze_t* out, struct maze_size_t size, struct point_t end, struct point_t start)
+int make_maze(struct maze_t* out, struct maze_size_t size, struct point_t start, struct point_t end)
 {
     // Assert that the given points are within the maze.
-    assert(check_point(size, end));
     assert(check_point(size, start));
+    assert(check_point(size, end));
 
     // Find the length of the array needed to store actions for each node.
     size_t length = (size.width * size.height + 1) / 2;
@@ -133,8 +133,8 @@ int make_maze(struct maze_t* out, struct maze_size_t size, struct point_t end, s
     // Initialize maze properties.
     out->actions = (struct action_pair_t*) ptr;
     out->size = size;
-    out->end = end;
     out->start = start;
+    out->end = end;
 
     return 0;
 }
@@ -163,10 +163,6 @@ void solve_maze(struct node_list_t* out, struct maze_t maze)
     // Define the maximum length for lists of nodes in the maze.
     size_t max_length = maze.size.width * maze.size.height;
 
-    // Create the list that will contain all explored nodes.
-    struct node_list_t explored;
-    if (make_list(&explored, max_length) != 0) return;
-
     // Create the list that will contain all nodes in the frontier.
     struct node_list_t frontier;
     if (make_list(&frontier, max_length) != 0) return;
@@ -180,6 +176,7 @@ void solve_maze(struct node_list_t* out, struct maze_t maze)
     // Insert the first node of the maze into the frontier.
     insert_node(&frontier, node, 0);
 
+    // Search for the end node, using the given list to store explored nodes.
     for (;;)
     {
         if (frontier.length == 0) return;
@@ -188,26 +185,17 @@ void solve_maze(struct node_list_t* out, struct maze_t maze)
         node_index = get_best_node(frontier, maze);
         node = *get_node(frontier, node_index);
 
-        if (point_equal(node.point, maze.end)) break;
+        // Add the node to the list of out nodes.
+        insert_node(out, node, out->length);
+
+        // If the node is the goal node, the search is complete.
+        if (point_equal(node.point, maze.end)) return;
 
         // Remove the node from the frontier.
         remove_node(&frontier, node_index);
 
-        // Add the node to the list of explored nodes.
-        insert_node(&explored, node, explored.length);
-
         // Generate the child nodes of the current node, appending them to the
         // frontier.
-        get_children(&frontier, maze, get_node(explored, explored.length - 1));
-    }
-
-    struct node_t* parent;
-    for (;;)
-    {
-        parent = node.parent;
-        node.parent = out->nodes + out->length + 1;
-        insert_node(out, node, out->length);
-        if (parent == NULL) return;
-        node = *parent;
+        get_children(&frontier, maze, get_node(*out, out->length - 1));
     }
 }

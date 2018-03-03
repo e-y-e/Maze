@@ -1,49 +1,53 @@
 #include <stdio.h>
 
+#include "io.h"
 #include "node.h"
 #include "node_list.h"
 #include "maze.h"
 
 int main()
 {
-    struct maze_t maze;
-    make_maze(&maze, (struct maze_size_t) { 5, 5 }, (struct point_t) { 0, 0 }, (struct point_t) { 4, 4 });
+    FILE* fp = fopen("file.txt", "r");
 
-    enum action_t action = (enum action_t) (NORTH | EAST | SOUTH | WEST);
-
-    size_t x = 0;
-    size_t y = 0;
-    for (;;)
+    if (fp == NULL)
     {
-        if (y >= 5) break;
-
-        x = 0;
-        for (;;)
-        {
-            if (x >= 5) break;
-
-            set_action(maze, action, (struct point_t) { x, y });
-
-            x++;
-        }
-
-        y++;
+        printf("Failed to open file.txt\n");
+        return -1;
     }
 
-    struct node_list_t path;
-    make_list(&path, 32);
+    struct maze_t maze;
+    int read_maze_result = read_maze(&maze, fp);
 
-    solve_maze(&path, maze);
+    if (read_maze_result != 0)
+    {
+        printf("Failed to read maze: return code %d\n", read_maze_result);
+        return read_maze_result;
+    }
 
-    size_t length = path.length;
+    struct node_list_t explored;
+    int make_list_result = make_list(&explored, 64);
+
+    if (make_list_result != 0)
+    {
+        printf("Failed to make list: return code %d\n", make_list_result);
+        return make_list_result;
+    }
+
+    solve_maze(&explored, maze);
 
     struct point_t point;
+
+    size_t length = explored.length;
     size_t index = 0;
+
     for (;;)
     {
         if (index >= length) break;
-        point = get_node(path, index)->point;
-        printf("Point: { %ld, %ld }\n", point.x, point.y);
+
+        point = get_node(explored, index)->point;
+
+        printf("Explored point { %ld, %ld }\n", point.x, point.y);
+
         index++;
     }
 

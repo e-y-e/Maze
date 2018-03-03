@@ -8,9 +8,9 @@
 enum action_t
 {
     NORTH = (1 << 3),
-    EAST  = (1 << 2),
+    WEST  = (1 << 2),
     SOUTH = (1 << 1),
-    WEST  = (1 << 0),
+    EAST  = (1 << 0),
     NONE  = 0
 };
 

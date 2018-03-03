@@ -27,8 +27,8 @@ struct maze_t
 {
     struct action_pair_t* actions;
     struct maze_size_t size;
-    struct point_t end;
     struct point_t start;
+    struct point_t end;
 };
 
 /**
