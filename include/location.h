@@ -23,9 +23,9 @@ struct location_t
  * Calculates a consistent measure of the distance between two locations.
  *
  * This function simply calculates the square of the straight-line distance
- * between the two locations, since taking the square root of integers would
- * impose an unnecessary overhead. This measure is still a consistent heuristic,
- * because the ordering is retained.
+ * between the two locations, then approximates the square root, since taking
+ * the square root of integers would impose an unnecessary overhead. This
+ * measure is still a consistent heuristic, because the ordering is retained.
  *
  * Returns:
  *     A consistent measure of distance between the two locations.

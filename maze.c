@@ -9,7 +9,16 @@
 
 
 /**
- * Gets the action available for a given location in a maze.
+ * Gets the action available at a given location in a maze.
+ *
+ * This helper function simply gets the action available at the given location
+ * in the maze by finding the correct entry in the actions array.
+ *
+ * Preconditions:
+ *     The location must be within the maze.
+ *
+ * Returns:
+ *     The action available at the given location.
  */
 static enum action_t get_action(struct maze_t maze, struct location_t location)
 {
@@ -63,6 +72,10 @@ static void get_children(struct node_list_t* out, struct maze_t maze, struct nod
 
 /**
  * Calculate the estimated cost of choosing a given node.
+ *
+ * This helper function simply estimates the cost of the path from the given
+ * node to the end of the maze. This will always be an underestimate of the true
+ * path cost.
  */
 static size_t cost_estimate(struct node_t node, struct maze_t maze)
 {

@@ -19,12 +19,24 @@ static size_t abs_difference(size_t a, size_t b)
 size_t location_distance(struct location_t a, struct location_t b)
 {
     // Calculate the distances on each axis.
-    size_t dx = abs_difference(a.row, b.row);
-    size_t dy = abs_difference(a.column, b.column);
+    size_t row_distance = abs_difference(a.row, b.row);
+    size_t column_distance = abs_difference(a.column, b.column);
 
     // Combine the axis distances to obtain the square of the straight-line
     // distance.
-    return dx * dx + dy * dy;
+    size_t distance_squared = row_distance * row_distance
+                            + column_distance * column_distance;
+
+    // The longest axis distance is the best starting point for approximation.
+    size_t candidate = row_distance < column_distance ? column_distance
+                                                      : row_distance;
+
+    // Approximate the distance by iterating through candidate solutions.
+    for (;;)
+    {
+        if (candidate * candidate >= distance_squared) return candidate;
+        candidate++;
+    }
 }
 
 // Define location_equal (location.h).
