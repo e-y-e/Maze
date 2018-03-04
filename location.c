@@ -7,6 +7,8 @@
  * This helper function allows the effective distance between two unsigned
  * integers to be calculated without having to convert to a signed
  * representation.
+ *
+ * Returns: the absolute difference between the two unsigned integers.
  */
 static size_t abs_difference(size_t a, size_t b)
 {
@@ -28,5 +30,5 @@ size_t location_distance(struct location_t a, struct location_t b)
 // Define location_equal (location.h).
 bool location_equal(struct location_t a, struct location_t b)
 {
-    return a.x == b.x && a.y == b.y;
+    return a.row == b.row && a.column == b.column;
 }

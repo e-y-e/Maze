@@ -31,8 +31,7 @@ struct maze_t;
  *     The file pointer must not be NULL.
  *
  * Returns:
- *     -1 on failure.
- *     0 on success.
+ *     -1 on failure, 0 on success.
  */
 int read_maze(struct maze_t*, FILE*);
 

@@ -35,7 +35,8 @@ size_t location_distance(struct location_t, struct location_t);
 /**
  * Determines if two locations are equal to each other.
  *
- * Simply compares the row and column of each location for exact equality.
+ * This function simply compares the row and column of each location for exact
+ * equality.
  *
  * Returns:
  *     Whether the two locations are equal.
