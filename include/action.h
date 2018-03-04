@@ -14,8 +14,7 @@ enum action_t
     NORTH = (1 << 3),
     WEST  = (1 << 2),
     SOUTH = (1 << 1),
-    EAST  = (1 << 0),
-    NONE  = 0
+    EAST  = (1 << 0)
 };
 
 
