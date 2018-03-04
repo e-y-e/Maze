@@ -3,22 +3,12 @@
 
 
 #include "action.h"
-#include "point.h"
-
-#include <stddef.h>
+#include "location.h"
+#include "maze_size.h"
 
 
 struct action_pair_t;
 struct node_list_t;
-
-/**
- * Represents the size of a rectangular maze.
- */
-struct maze_size_t
-{
-    size_t width;
-    size_t height;
-};
 
 /**
  * Represents a maze.
@@ -27,8 +17,8 @@ struct maze_t
 {
     struct action_pair_t* actions;
     struct maze_size_t size;
-    struct point_t start;
-    struct point_t end;
+    struct location_t start;
+    struct location_t end;
 };
 
 /**
@@ -36,12 +26,12 @@ struct maze_t
  *
  * Returns -1 on failure, 0 on success.
  */
-int make_maze(struct maze_t* out, struct maze_size_t size, struct point_t start, struct point_t end);
+int make_maze(struct maze_t* out, struct maze_size_t size, struct location_t start, struct location_t end);
 
 /**
- * Sets the action available at a given point in a maze.
+ * Sets the action available at a given location in a maze.
  */
-void set_action(struct maze_t maze, enum action_t action, struct point_t point);
+void set_action(struct maze_t maze, enum action_t action, struct location_t location);
 
 /**
  * Solves a given maze using A* search.

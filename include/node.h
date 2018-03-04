@@ -2,7 +2,7 @@
 #define NODE_H
 
 
-#include "point.h"
+#include "location.h"
 
 #include <stddef.h>
 
@@ -18,7 +18,7 @@
  */
 struct node_t
 {
-    struct point_t point;
+    struct locaton_t location;
     struct node_t* parent;
     size_t path_cost;
 };
