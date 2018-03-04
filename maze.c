@@ -35,9 +35,12 @@ static enum action_t get_action(struct maze_t maze, struct location_t location)
 /**
  * Gets all the children reachable from a given node in a maze.
  *
- * Appends the child nodes to the end of a given node list.
+ * This helper function generates the nodes reachable from the given node by
+ * finding the locations resulting from the action available at the node's
+ * location and constructing the child nodes from the results. Each child node
+ * is appended to the given list.
  */
-static void get_children(struct node_list_t* out, struct maze_t maze, struct node_t* node)
+static void get_children(struct node_list_t* out, struct node_t* node, struct maze_t maze)
 {
     // Get the action available for the location.
     enum action_t action = get_action(maze, node->location);
@@ -76,6 +79,9 @@ static void get_children(struct node_list_t* out, struct maze_t maze, struct nod
  * This helper function simply estimates the cost of the path from the given
  * node to the end of the maze. This will always be an underestimate of the true
  * path cost.
+ *
+ * Returns:
+ *     The estimated cost of choosing the given node.
  */
 static size_t cost_estimate(struct node_t node, struct maze_t maze)
 {
@@ -83,20 +89,33 @@ static size_t cost_estimate(struct node_t node, struct maze_t maze)
 }
 
 /**
- * Get the frontier index of the estimated best node to expand next in a given maze.
+ * Get the index of the estimated best node in a list to expand for a given
+ * maze.
+ *
+ * This helper function finds the best node in the given list by calculating the
+ * estimated cost of choosing each node, with the given maze. The index of this
+ * node is returned so that the node can be accessed and removed from the list
+ * if necessary.
+ *
+ * Preconditions:
+ *     The given list must not be empty.
+ *
+ * Returns:
+ *     The index of the estimated best node in the list.
  */
 static size_t get_best_node(struct node_list_t frontier, struct maze_t maze)
 {
     // Assert that the frontier is not empty.
     assert(frontier.length > 0);
 
-    // Store the best node index and its estimated cost.
+    // Store the best node index and its estimated cost. Assume for now that the
+    // first node is the best node.
     size_t best_index = 0;
     size_t best_cost = cost_estimate(*get_node(frontier, 0), maze);
 
     size_t length = frontier.length;
 
-    // Store the current node index and its estimated cost.
+    // Search the remaining nodes for the best node.
     size_t index = 1;
     size_t cost = 0;
     for (;;)
@@ -119,6 +138,7 @@ static size_t get_best_node(struct node_list_t frontier, struct maze_t maze)
     return best_index;
 }
 
+// Define make_maze (maze.h).
 int make_maze(struct maze_t* out, struct maze_size_t size, struct location_t start, struct location_t end)
 {
     // Assert that the given locations are within the maze.
@@ -143,6 +163,7 @@ int make_maze(struct maze_t* out, struct maze_size_t size, struct location_t sta
     return 0;
 }
 
+// Define set_action (maze.h).
 void set_action(struct maze_t maze, enum action_t action, struct location_t location)
 {
     // Assert that the given location is within the maze.
@@ -162,6 +183,7 @@ void set_action(struct maze_t maze, enum action_t action, struct location_t loca
     }
 }
 
+// Define solve_maze (maze.h).
 void solve_maze(struct node_list_t* out, struct maze_t maze)
 {
     // Define the maximum length for lists of nodes in the maze.
@@ -174,10 +196,11 @@ void solve_maze(struct node_list_t* out, struct maze_t maze)
     // Store the index of the next node to expand.
     size_t node_index = 0;
 
-    // Create the node that will represent the current end of the path.
+    // Create the node that will represent the current node being explored.
+    // Initially this is the start node.
     struct node_t node = { maze.start, NULL, 0 };
 
-    // Insert the first node of the maze into the frontier.
+    // Insert the start node of the maze into the frontier.
     insert_node(&frontier, node, 0);
 
     // Search for the end node, using the given list to store explored nodes.
@@ -200,6 +223,6 @@ void solve_maze(struct node_list_t* out, struct maze_t maze)
 
         // Generate the child nodes of the current node, appending them to the
         // frontier.
-        get_children(&frontier, maze, get_node(*out, out->length - 1));
+        get_children(&frontier, get_node(*out, out->length - 1), maze);
     }
 }
