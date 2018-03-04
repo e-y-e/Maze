@@ -2,9 +2,11 @@
 #define NODE_LIST_H
 
 
+#include <stdbool.h>
 #include <stddef.h>
 
 
+struct location_t;
 struct node_t;
 
 /**
@@ -87,6 +89,18 @@ int insert_node(struct node_list_t* list, struct node_t node, size_t index);
  *     The index must be within the length of the given list.
  */
 void remove_node(struct node_list_t* list, size_t index);
+
+/**
+ * Determines if there is a node with a given location in a list.
+ *
+ * This function simply attempts to find a node in the given list that has a
+ * location that is the same as the given location, and indicates whether it was
+ * able to find one.
+ *
+ * Returns:
+ *     Whether there is a node with the given location in the list.
+ */
+bool contains_node(struct node_list_t list, struct location_t location);
 
 
 #endif // NODE_LIST_H

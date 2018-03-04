@@ -1,5 +1,6 @@
 #include "node_list.h"
 
+#include "location.h"
 #include "node.h"
 
 #include <assert.h>
@@ -104,4 +105,24 @@ void remove_node(struct node_list_t* list, size_t index)
 
     // Update list length to reflect removed node.
     list->length--;
+}
+
+// Define contains_node (node_list.h)
+bool contains_node(struct node_list_t list, struct location_t location)
+{
+    size_t length = list.length;
+
+    // Search the list for a node at the given location
+    size_t index = 0;
+    for (;;)
+    {
+        // Indicate if no node was found.
+        if (index >= length) return false;
+
+        // If the node at this index is at the given location, indicate that the
+        // node was found.
+        if (location_equal(list.nodes[index].location, location)) return true;
+
+        index++;
+    }
 }

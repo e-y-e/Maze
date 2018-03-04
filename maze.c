@@ -1,5 +1,6 @@
 #include "maze.h"
 
+#include "location.h"
 #include "node.h"
 #include "action_pair.h"
 #include "node_list.h"
@@ -38,12 +39,15 @@ static enum action_t get_action(struct maze_t maze, struct location_t location)
  * This helper function generates the nodes reachable from the given node by
  * finding the locations resulting from the action available at the node's
  * location and constructing the child nodes from the results. Each child node
- * is appended to the given list.
+ * is appended to the given list, unless the child node is among those already
+ * present in the given list of explored nodes.
  */
-static void get_children(struct node_list_t* out, struct node_t* node, struct maze_t maze)
+static void get_children(struct node_list_t* out, struct node_t* node, struct node_list_t explored, struct maze_t maze)
 {
+    struct location_t location = node->location;
+
     // Get the action available for the location.
-    enum action_t action = get_action(maze, node->location);
+    enum action_t action = get_action(maze, location);
 
     // Create a generic child node variable for reuse in each action.
     struct node_t child;
@@ -53,39 +57,51 @@ static void get_children(struct node_list_t* out, struct node_t* node, struct ma
     // Insert all the child nodes reachable by the action to the list.
     if (action & NORTH)
     {
-        child.location = (struct location_t) { node->location.row - 1, node->location.column };
-        insert_node(out, child, out->length);
+        child.location = (struct location_t) { location.row - 1, location.column };
+        if (!contains_node(explored, child.location))
+        {
+            insert_node(out, child, out->length);
+        }
     }
     if (action & WEST)
     {
-        child.location = (struct location_t) { node->location.row, node->location.column - 1 };
-        insert_node(out, child, out->length);
+        child.location = (struct location_t) { location.row, location.column - 1 };
+        if (!contains_node(explored, child.location))
+        {
+            insert_node(out, child, out->length);
+        }
     }
     if (action & SOUTH)
     {
-        child.location = (struct location_t) { node->location.row + 1, node->location.column };
-        insert_node(out, child, out->length);
+        child.location = (struct location_t) { location.row + 1, location.column };
+        if (!contains_node(explored, child.location))
+        {
+            insert_node(out, child, out->length);
+        }
     }
     if (action & EAST)
     {
-        child.location = (struct location_t) { node->location.row, node->location.column + 1 };
-        insert_node(out, child, out->length);
+        child.location = (struct location_t) { location.row, location.column + 1 };
+        if (!contains_node(explored, child.location))
+        {
+            insert_node(out, child, out->length);
+        }
     }
 }
 
 /**
  * Calculate the estimated cost of choosing a given node.
  *
- * This helper function simply estimates the cost of the path from the given
- * node to the end of the maze. This will always be an underestimate of the true
- * path cost.
+ * This helper function simply estimates the cost of the path via the given node
+ * to the end of the maze. This will always be an underestimate of the true path
+ * cost.
  *
  * Returns:
  *     The estimated cost of choosing the given node.
  */
 static size_t cost_estimate(struct node_t node, struct maze_t maze)
 {
-    return node.path_cost + location_distance(node.location, maze.end);
+    return 1 + location_distance(node.location, maze.end);
 }
 
 /**
@@ -197,13 +213,13 @@ void solve_maze(struct node_list_t* out, struct maze_t maze)
     size_t node_index = 0;
 
     // Create the node that will represent the current node being explored.
-    // Initially this is the start node.
-    struct node_t node = { maze.start, NULL, 0 };
+    // Initially this is the end node, as this implementation works backwards.
+    struct node_t node = { maze.end, NULL, 0 };
 
-    // Insert the start node of the maze into the frontier.
+    // Insert the end node of the maze into the frontier.
     insert_node(&frontier, node, 0);
 
-    // Search for the end node, using the given list to store explored nodes.
+    // Search for the start node, using the given list to store explored nodes.
     for (;;)
     {
         if (frontier.length == 0) return;
@@ -215,14 +231,14 @@ void solve_maze(struct node_list_t* out, struct maze_t maze)
         // Add the node to the list of out nodes.
         insert_node(out, node, out->length);
 
-        // If the node is the goal node, the search is complete.
-        if (location_equal(node.location, maze.end)) return;
+        // If the node is the start node, the search is complete.
+        if (location_equal(node.location, maze.start)) return;
 
         // Remove the node from the frontier.
         remove_node(&frontier, node_index);
 
         // Generate the child nodes of the current node, appending them to the
         // frontier.
-        get_children(&frontier, get_node(*out, out->length - 1), maze);
+        get_children(&frontier, get_node(*out, out->length - 1), *out, maze);
     }
 }

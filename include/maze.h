@@ -54,11 +54,11 @@ void set_action(struct maze_t maze, enum action_t action, struct location_t loca
 /**
  * Solves a given maze using A* search.
  *
- * This function attempts to find a path from the start of the given maze to the
- * end, using A* search, which iteratively expands the next closest node to the
- * end location. Every expanded node is inserted into the given list in order,
- * such that the final node in the list will be the end of the maze, if the
- * search was successful.
+ * This function attempts to find a path from the end of the given maze back to
+ * the start, using A* search, which iteratively expands the next closest node
+ * to the start location. Every expanded node is inserted into the given list in
+ * order, such that the final node in the list will be the start of the maze, if
+ * the search was successful.
  */
 void solve_maze(struct node_list_t* out, struct maze_t maze);
 
