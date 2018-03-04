@@ -2,10 +2,12 @@
 
 #include "node.h"
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
 
+// Define make_list (node_list.h).
 int make_list(struct node_list_t* out, size_t initial_capacity)
 {
     // Allocate required memory.
@@ -22,6 +24,7 @@ int make_list(struct node_list_t* out, size_t initial_capacity)
     return 0;
 }
 
+// Define resize_list (node_list.h).
 int resize_list(struct node_list_t* list, size_t new_capacity)
 {
     // Allocate required memory.
@@ -37,18 +40,21 @@ int resize_list(struct node_list_t* list, size_t new_capacity)
     return 0;
 }
 
+// Define get_node (node_list.h).
 struct node_t* get_node(struct node_list_t list, size_t index)
 {
-    if (index >= list.length) return NULL;
+    // Assert that the index cannot be past the end of the list.
+    assert(index < list.length);
 
     return &list.nodes[index];
 }
 
+// Define insert_node (node_list.h).
 int insert_node(struct node_list_t* list, struct node_t node, size_t index)
 {
-    // Indicate that the index cannot be past where the end of the list would be
+    // Assert that the index cannot be past where the end of the list would be
     // after inserting another node.
-    if (index > list->length) return -1;
+    assert(index < list->length + 1);
 
     // If the capacity has been reached, resize the list.
     if (list->length >= list->capacity)
@@ -76,17 +82,18 @@ int insert_node(struct node_list_t* list, struct node_t node, size_t index)
     return 0;
 }
 
-int remove_node(struct node_list_t* list, size_t index)
+// Define remove_node (node_list.h).
+void remove_node(struct node_list_t* list, size_t index)
 {
-    // Indicate that the index cannot be past the end of the list.
-    if (index >= list->length) return -1;
+    // Assert that the index cannot be past the end of the list.
+    assert(index < list->length);
 
     // No need to move memory around when the position indicates the last
     // node in the list. Simply decrease the length.
     if (index == list->length - 1)
     {
         list->length--;
-        return 0;
+        return;
     }
 
     // Find the pointer to the position in the list referenced by the index.
@@ -97,6 +104,4 @@ int remove_node(struct node_list_t* list, size_t index)
 
     // Update list length to reflect removed node.
     list->length--;
-
-    return 0;
 }

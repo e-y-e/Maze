@@ -85,11 +85,8 @@ int insert_node(struct node_list_t* list, struct node_t node, size_t index);
  *
  * Preconditions:
  *     The index must be within the length of the given list.
- *
- * Returns:
- *     -1 on failure, 0 on success.
  */
-int remove_node(struct node_list_t* list, size_t index);
+void remove_node(struct node_list_t* list, size_t index);
 
 
 #endif // NODE_LIST_H
