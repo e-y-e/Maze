@@ -26,6 +26,9 @@ struct location_t
  * between the two locations, since taking the square root of integers would
  * impose an unnecessary overhead. This measure is still a consistent heuristic,
  * because the ordering is retained.
+ *
+ * Returns:
+ *     A consistent measure of distance between the two locations.
  */
 size_t location_distance(struct location_t, struct location_t);
 
@@ -33,6 +36,9 @@ size_t location_distance(struct location_t, struct location_t);
  * Determines if two locations are equal to each other.
  *
  * Simply compares the row and column of each location for exact equality.
+ *
+ * Returns:
+ *     Whether the two locations are equal.
  */
 bool location_equal(struct location_t, struct location_t);
 
