@@ -3,7 +3,11 @@
 
 
 /**
- * Represents an action available at a node in a maze.
+ * Represents the action available at a node in a maze.
+ *
+ * This enumerated type provides representations for the directions in which a
+ * node can be expanded. These representations allow multiple directions to be
+ * combined using simple bitwise operations.
  */
 enum action_t
 {

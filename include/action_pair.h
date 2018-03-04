@@ -10,6 +10,11 @@
 
 /**
  * Combines two action types into a single byte-aligned struct.
+ *
+ * This struct utilises bitfields to combine two actions which each only require
+ * 4 bits to represent. To avoid the compiler padding the representation of this
+ * struct to the alignment boundary (usually 4 bytes), compiler directives must
+ * be utilised.
  */
 struct action_pair_t
 {
