@@ -4,29 +4,20 @@
 #include "action_pair.h"
 #include "node_list.h"
 
-#include <stdbool.h>
 #include <assert.h>
 #include <stdlib.h>
 
 
 /**
- * Checks if a point is within a maze of a given size.
+ * Gets the action available for a given location in a maze.
  */
-static bool check_point(struct maze_size_t size, struct point_t point)
+static enum action_t get_action(struct maze_t maze, struct location_t location)
 {
-    return point.x < size.width && point.y < size.height;
-}
+    // Assert that the given location is within the maze.
+    assert(check_location(maze.size, location));
 
-/**
- * Gets the action available for a given point in a maze.
- */
-static enum action_t get_action(struct maze_t maze, struct point_t point)
-{
-    // Assert that the given point is within the maze.
-    assert(check_point(maze.size, point));
-
-    // Find the index to the action based on the position.
-    size_t index = point.y * maze.size.width + point.x;
+    // Find the index to the action based on the location.
+    size_t index = location.row * maze.size.columns + location.column;
 
     // Get the correct action from the pair of actions
     return index & 1 ? maze.actions[index / 2].b : maze.actions[index / 2].a;
@@ -39,8 +30,8 @@ static enum action_t get_action(struct maze_t maze, struct point_t point)
  */
 static void get_children(struct node_list_t* out, struct maze_t maze, struct node_t* node)
 {
-    // Get the action available for the point.
-    enum action_t action = get_action(maze, node->point);
+    // Get the action available for the location.
+    enum action_t action = get_action(maze, node->location);
 
     // Create a generic child node variable for reuse in each action.
     struct node_t child;
@@ -50,22 +41,22 @@ static void get_children(struct node_list_t* out, struct maze_t maze, struct nod
     // Insert all the child nodes reachable by the action to the list.
     if (action & NORTH)
     {
-        child.point = (struct point_t) { node->point.x, node->point.y - 1 };
-        insert_node(out, child, out->length);
-    }
-    if (action & EAST)
-    {
-        child.point = (struct point_t) { node->point.x + 1, node->point.y };
-        insert_node(out, child, out->length);
-    }
-    if (action & SOUTH)
-    {
-        child.point = (struct point_t) { node->point.x, node->point.y + 1 };
+        child.location = (struct location_t) { node->location.row - 1, node->location.column };
         insert_node(out, child, out->length);
     }
     if (action & WEST)
     {
-        child.point = (struct point_t) { node->point.x - 1, node->point.y };
+        child.location = (struct location_t) { node->location.row, node->location.column - 1 };
+        insert_node(out, child, out->length);
+    }
+    if (action & SOUTH)
+    {
+        child.location = (struct location_t) { node->location.row + 1, node->location.column };
+        insert_node(out, child, out->length);
+    }
+    if (action & EAST)
+    {
+        child.location = (struct location_t) { node->location.row, node->location.column + 1 };
         insert_node(out, child, out->length);
     }
 }
@@ -75,7 +66,7 @@ static void get_children(struct node_list_t* out, struct maze_t maze, struct nod
  */
 static size_t cost_estimate(struct node_t node, struct maze_t maze)
 {
-    return node.path_cost + point_distance(node.point, maze.end);
+    return node.path_cost + location_distance(node.location, maze.end);
 }
 
 /**
@@ -115,14 +106,14 @@ static size_t get_best_node(struct node_list_t frontier, struct maze_t maze)
     return best_index;
 }
 
-int make_maze(struct maze_t* out, struct maze_size_t size, struct point_t start, struct point_t end)
+int make_maze(struct maze_t* out, struct maze_size_t size, struct location_t start, struct location_t end)
 {
-    // Assert that the given points are within the maze.
-    assert(check_point(size, start));
-    assert(check_point(size, end));
+    // Assert that the given locations are within the maze.
+    assert(check_location(size, start));
+    assert(check_location(size, end));
 
     // Find the length of the array needed to store actions for each node.
-    size_t length = (size.width * size.height + 1) / 2;
+    size_t length = (size.rows * size.columns + 1) / 2;
 
     // Allocate the memory required for the array.
     void* ptr = calloc(length, sizeof(struct action_pair_t));
@@ -139,13 +130,13 @@ int make_maze(struct maze_t* out, struct maze_size_t size, struct point_t start,
     return 0;
 }
 
-void set_action(struct maze_t maze, enum action_t action, struct point_t point)
+void set_action(struct maze_t maze, enum action_t action, struct location_t location)
 {
-    // Assert that the given point is within the maze.
-    assert(check_point(maze.size, point));
+    // Assert that the given location is within the maze.
+    assert(check_location(maze.size, location));
 
-    // Find the index to the action based on the position.
-    size_t index = point.y * maze.size.width + point.x;
+    // Find the index to the action based on the location.
+    size_t index = location.row * maze.size.columns + location.column;
 
     // Set the correct action in the pair of actions.
     if (index & 1)
@@ -161,7 +152,7 @@ void set_action(struct maze_t maze, enum action_t action, struct point_t point)
 void solve_maze(struct node_list_t* out, struct maze_t maze)
 {
     // Define the maximum length for lists of nodes in the maze.
-    size_t max_length = maze.size.width * maze.size.height;
+    size_t max_length = maze.size.rows * maze.size.columns;
 
     // Create the list that will contain all nodes in the frontier.
     struct node_list_t frontier;
@@ -189,7 +180,7 @@ void solve_maze(struct node_list_t* out, struct maze_t maze)
         insert_node(out, node, out->length);
 
         // If the node is the goal node, the search is complete.
-        if (point_equal(node.point, maze.end)) return;
+        if (location_equal(node.location, maze.end)) return;
 
         // Remove the node from the frontier.
         remove_node(&frontier, node_index);

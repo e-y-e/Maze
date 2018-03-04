@@ -28,13 +28,13 @@ static int read_size(struct maze_size_t* out, FILE* fp)
     size_t columns = strtoul(end_ptr, &end_ptr, 10);
     if (columns == 0) return -1;
 
-    out->width = columns;
-    out->height = rows;
+    out->rows = rows;
+    out->columns = columns;
 
     return 0;
 }
 
-static int read_point(struct point_t* out, FILE* fp)
+static int read_location(struct location_t* out, FILE* fp)
 {
     // Assert that the stream is valid.
     assert(fp != NULL);
@@ -48,11 +48,11 @@ static int read_point(struct point_t* out, FILE* fp)
     end_ptr = fgets(line, 64, fp);
     if (end_ptr == NULL) return -1;
 
-    // Convert the first number in the buffer to the y location.
-    out->y = strtoul(end_ptr, &end_ptr, 10);
+    // Convert the first number in the buffer to the row.
+    out->row = strtoul(end_ptr, &end_ptr, 10);
 
-    // Convert the next number in the buffer to the x location.
-    out->x = strtoul(end_ptr, &end_ptr, 10);
+    // Convert the next number in the buffer to the column.
+    out->column = strtoul(end_ptr, &end_ptr, 10);
 
     return 0;
 }
@@ -62,8 +62,8 @@ static int read_actions(struct maze_t maze, FILE* fp)
     // Assert that the stream is valid.
     assert(fp != NULL);
 
-    size_t width = maze.size.width;
-    size_t height = maze.size.height;
+    size_t rows = maze.size.rows;
+    size_t columns = maze.size.columns;
 
     char line[512] = "";
     char* end_ptr = NULL;
@@ -71,11 +71,11 @@ static int read_actions(struct maze_t maze, FILE* fp)
     size_t walls = 0;
     enum action_t action;
 
-    size_t x = 0;
-    size_t y = 0;
+    size_t row = 0;
+    size_t column = 0;
     for (;;)
     {
-        if (y >= height) return 0;
+        if (row >= rows) return 0;
 
         // If there are no lines left to read, indicate an error.
         if (feof(fp)) return -1;
@@ -83,21 +83,21 @@ static int read_actions(struct maze_t maze, FILE* fp)
         end_ptr = fgets(line, 512, fp);
         if (end_ptr == NULL) return -1;
 
-        x = 0;
+        column = 0;
         for (;;)
         {
-            if (x >= width) break;
+            if (column >= columns) break;
 
             walls = strtoul(end_ptr, &end_ptr, 10);
 
             action = (enum action_t) (~walls & 0xF);
 
-            set_action(maze, action, (struct point_t) { x, y });
+            set_action(maze, action, (struct location_t) { row, column });
 
-            x++;
+            column++;
         }
 
-        y++;
+        row++;
     }
 }
 
@@ -111,14 +111,14 @@ int read_maze(struct maze_t* maze, FILE* fp)
     int read_size_result = read_size(&size, fp);
     if (read_size_result != 0) return read_size_result;
 
-    // Read the start point of the maze.
-    struct point_t start;
-    int read_start_result = read_point(&start, fp);
+    // Read the start location of the maze.
+    struct location_t start;
+    int read_start_result = read_location(&start, fp);
     if (read_start_result != 0) return read_start_result;
 
-    // Read the end point of the maze.
-    struct point_t end;
-    int read_end_result = read_point(&end, fp);
+    // Read the end location of the maze.
+    struct location_t end;
+    int read_end_result = read_location(&end, fp);
     if (read_end_result != 0) return read_end_result;
 
     // Construct the maze from the data read.

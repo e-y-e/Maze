@@ -18,7 +18,7 @@
  */
 struct node_t
 {
-    struct locaton_t location;
+    struct location_t location;
     struct node_t* parent;
     size_t path_cost;
 };
