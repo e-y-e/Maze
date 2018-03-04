@@ -31,7 +31,7 @@ struct node_list_t
  * Returns:
  *     -1 on failure, 0 on success.
  */
-int make_list(struct node_list_t*, size_t);
+int make_list(struct node_list_t* out, size_t initial_capacity);
 
 /**
  * Resizes a node list to accomodate an updated capacity.
@@ -43,7 +43,7 @@ int make_list(struct node_list_t*, size_t);
  * Returns:
  *     -1 on failure, 0 on success.
  */
-int resize_list(struct node_list_t*, size_t);
+int resize_list(struct node_list_t* list, size_t new_capacity);
 
 /**
  * Get the node at a given index in a list.
@@ -57,7 +57,7 @@ int resize_list(struct node_list_t*, size_t);
  * Returns:
  *     A pointer to the node at the given index.
  */
-struct node_t* get_node(struct node_list_t, size_t);
+struct node_t* get_node(struct node_list_t list, size_t index);
 
 /**
  * Inserts a node into a node list at a given index.
@@ -74,7 +74,7 @@ struct node_t* get_node(struct node_list_t, size_t);
  * Returns:
  *     -1 on failure, 0 on success.
  */
-int insert_node(struct node_list_t*, struct node_t, size_t);
+int insert_node(struct node_list_t* list, struct node_t node, size_t index);
 
 /**
  * Removes the node at a given index in a node list.
@@ -89,7 +89,7 @@ int insert_node(struct node_list_t*, struct node_t, size_t);
  * Returns:
  *     -1 on failure, 0 on success.
  */
-int remove_node(struct node_list_t*, size_t);
+int remove_node(struct node_list_t* list, size_t index);
 
 
 #endif // NODE_LIST_H

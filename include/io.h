@@ -33,7 +33,7 @@ struct maze_t;
  * Returns:
  *     -1 on failure, 0 on success.
  */
-int read_maze(struct maze_t*, FILE*);
+int read_maze(struct maze_t* out, FILE* fp);
 
 
 #endif // IO_H

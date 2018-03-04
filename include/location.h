@@ -30,7 +30,7 @@ struct location_t
  * Returns:
  *     A consistent measure of distance between the two locations.
  */
-size_t location_distance(struct location_t, struct location_t);
+size_t location_distance(struct location_t a, struct location_t b);
 
 /**
  * Determines if two locations are equal to each other.
@@ -41,7 +41,7 @@ size_t location_distance(struct location_t, struct location_t);
  * Returns:
  *     Whether the two locations are equal.
  */
-bool location_equal(struct location_t, struct location_t);
+bool location_equal(struct location_t a, struct location_t b);
 
 
 #endif // LOCATION_H

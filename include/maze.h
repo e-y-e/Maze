@@ -36,17 +36,17 @@ struct maze_t
  *
  * Returns -1 on failure, 0 on success.
  */
-int make_maze(struct maze_t*, struct maze_size_t, struct point_t, struct point_t);
+int make_maze(struct maze_t* out, struct maze_size_t size, struct point_t start, struct point_t end);
 
 /**
  * Sets the action available at a given point in a maze.
  */
-void set_action(struct maze_t, enum action_t, struct point_t);
+void set_action(struct maze_t maze, enum action_t action, struct point_t point);
 
 /**
  * Solves a given maze using A* search.
  */
-void solve_maze(struct node_list_t*, struct maze_t);
+void solve_maze(struct node_list_t* out, struct maze_t maze);
 
 
 #endif // MAZE_H
