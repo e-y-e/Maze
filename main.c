@@ -57,8 +57,7 @@ int main(int argc, char** argv)
 
         node = *get_node(explored, index);
         location = node.location;
-        printf("Explored node at location { %ld, %ld }, ", location.row, location.column);
-        printf("path cost %ld\n", node.path_cost);
+        printf("Explored node at location { %ld, %ld },\n", location.row, location.column);
 
         index++;
     }

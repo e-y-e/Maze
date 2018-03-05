@@ -52,7 +52,6 @@ static void get_children(struct node_list_t* out, struct node_t* node, struct no
     // Create a generic child node variable for reuse in each action.
     struct node_t child;
     child.parent = node;
-    child.path_cost = node->path_cost + 1;
 
     // Insert all the child nodes reachable by the action to the list.
     if (action & NORTH)
@@ -214,7 +213,7 @@ void solve_maze(struct node_list_t* out, struct maze_t maze)
 
     // Create the node that will represent the current node being explored.
     // Initially this is the end node, as this implementation works backwards.
-    struct node_t node = { maze.end, NULL, 0 };
+    struct node_t node = { maze.end, NULL };
 
     // Insert the end node of the maze into the frontier.
     insert_node(&frontier, node, 0);
