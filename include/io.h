@@ -35,5 +35,27 @@ struct maze_t;
  */
 int read_maze(struct maze_t* out, FILE* fp);
 
+/**
+ * Writes an ascii character representation of a maze to a file.
+ *
+ * This function uses the character '#' along with whitespace to print out the
+ * given maze to the file. Each location in the maze is represented by a 3x4
+ * (rowsxcolumns) block of characters, apart from two of the edges, which have
+ * an additional row and/or column to represent the edge. As an example, a 3x3
+ * maze might be printed as follows:
+ *
+ * #############
+ * #           #
+ * #########   #
+ * #       #   #
+ * #   #   #   #
+ * #   #       #
+ * #############
+ *
+ * Preconditions:
+ *     The file pointer must not be NULL.
+ */
+void write_maze(struct maze_t maze, FILE* fp);
+
 
 #endif // IO_H
