@@ -72,5 +72,9 @@ int main(int argc, char** argv)
         location = node.location;
     }
 
+    printf("Maze:\n");
+
+    write_maze(maze, stdout);
+
     return 0;
 }

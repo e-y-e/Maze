@@ -55,7 +55,7 @@ int read_maze(struct maze_t* out, FILE* fp);
  * Preconditions:
  *     The file pointer must not be NULL.
  */
-void write_maze(struct maze_t maze, FILE* fp);
+int write_maze(struct maze_t maze, FILE* fp);
 
 
 #endif // IO_H

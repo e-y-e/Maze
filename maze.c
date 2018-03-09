@@ -9,19 +9,8 @@
 #include <stdlib.h>
 
 
-/**
- * Gets the action available at a given location in a maze.
- *
- * This helper function simply gets the action available at the given location
- * in the maze by finding the correct entry in the actions array.
- *
- * Preconditions:
- *     The location must be within the maze.
- *
- * Returns:
- *     The action available at the given location.
- */
-static enum action_t get_action(struct maze_t maze, struct location_t location)
+// Define get_action (maze.h).
+enum action_t get_action(struct maze_t maze, struct location_t location)
 {
     // Assert that the given location is within the maze.
     assert(check_location(maze.size, location));

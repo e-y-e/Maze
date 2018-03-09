@@ -52,6 +52,20 @@ int make_maze(struct maze_t* out, struct maze_size_t size, struct location_t sta
 void set_action(struct maze_t maze, enum action_t action, struct location_t location);
 
 /**
+ * Gets the action available at a given location in a maze.
+ *
+ * This function simply gets the action available at the given location in the
+ * maze by finding the correct entry in the actions array.
+ *
+ * Preconditions:
+ *     The location must be within the maze.
+ *
+ * Returns:
+ *     The action available at the given location.
+ */
+enum action_t get_action(struct maze_t maze, struct location_t location);
+
+/**
  * Solves a given maze using A* search.
  *
  * This function attempts to find a path from the end of the given maze back to

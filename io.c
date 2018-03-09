@@ -164,3 +164,66 @@ int read_maze(struct maze_t* maze, FILE* fp)
 
     return 0;
 }
+
+// Define write_maze (io.h)
+int write_maze(struct maze_t maze, FILE* fp)
+{
+    size_t rows = maze.size.rows;
+    size_t columns = maze.size.columns;
+
+    unsigned char walls = 0;
+
+    size_t row = 0;
+    size_t column = 0;
+
+    for (;;)
+    {
+        if (row >= rows) break;
+
+        column = 0;
+        for (;;)
+        {
+            if (column >= columns) break;
+
+            walls = ~get_action(maze, (struct location_t) { row, column }) & 0x0F;
+
+            fprintf(fp, walls & 0x08 ? "####" : (walls & 0x04 ? "#   " : "    "));
+
+            column++;
+        }
+
+        fprintf(fp, walls & 0x03 ? "#\n" : " \n");
+
+        column = 0;
+        for (;;)
+        {
+            if (column >= columns) break;
+
+            walls = ~get_action(maze, (struct location_t) { row, column }) & 0x0F;
+
+            fprintf(fp, walls & 0x04 ? "#   " : "    ");
+
+            column++;
+        }
+
+        fprintf(fp, walls & 0x01 ? "#\n" : " \n");
+
+        row++;
+    }
+
+    column = 0;
+    for (;;)
+    {
+        if (column >= columns) break;
+
+        walls = ~get_action(maze, (struct location_t) { row - 1, column }) & 0x0F;
+
+        fprintf(fp, walls & 0x02 ? "####" : (walls & 0x01 ? "#   " : "    "));
+
+        column++;
+    }
+
+    fprintf(fp, walls & 0x01 ? "#\n" : " \n");
+
+    return 0;
+}
