@@ -168,10 +168,13 @@ int read_maze(struct maze_t* maze, FILE* fp)
 // Define write_maze (io.h)
 int write_maze(struct maze_t maze, FILE* fp)
 {
+    assert(fp != NULL);
+
     size_t rows = maze.size.rows;
     size_t columns = maze.size.columns;
 
     unsigned char walls = 0;
+    int fprintf_result = 0;
 
     size_t row = 0;
     size_t column = 0;
@@ -180,6 +183,7 @@ int write_maze(struct maze_t maze, FILE* fp)
     {
         if (row >= rows) break;
 
+        // Write the north walls and north-east corners of this row to the file.
         column = 0;
         for (;;)
         {
@@ -187,13 +191,17 @@ int write_maze(struct maze_t maze, FILE* fp)
 
             walls = ~get_action(maze, (struct location_t) { row, column }) & 0x0F;
 
-            fprintf(fp, walls & 0x08 ? "####" : (walls & 0x04 ? "#   " : "    "));
+            fprintf_result = fprintf(fp, walls & 0x08 ? "####" : (walls & 0x04 ? "#   " : "    "));
+            if (fprintf_result != 4) return -1;
 
             column++;
         }
 
-        fprintf(fp, walls & 0x03 ? "#\n" : " \n");
+        // Write out any extra characters for the north-west corner of this row, followed by the end of the line.
+        fprintf_result = fprintf(fp, walls & 0x09 ? "#\n" : " \n");
+        if (fprintf_result != 2) return -1;
 
+        // Write the east walls of this row to the file.
         column = 0;
         for (;;)
         {
@@ -201,16 +209,20 @@ int write_maze(struct maze_t maze, FILE* fp)
 
             walls = ~get_action(maze, (struct location_t) { row, column }) & 0x0F;
 
-            fprintf(fp, walls & 0x04 ? "#   " : "    ");
+            fprintf_result = fprintf(fp, walls & 0x04 ? "#   " : "    ");
+            if (fprintf_result != 4) return -1;
 
             column++;
         }
 
-        fprintf(fp, walls & 0x01 ? "#\n" : " \n");
+        // Write out any extra characters for the east wall of this row, followed by the end of the line.
+        fprintf_result = fprintf(fp, walls & 0x01 ? "#\n" : " \n");
+        if (fprintf_result != 2) return -1;
 
         row++;
     }
 
+    // Write the south walls and south-east corners of the final row of the maze to the file.
     column = 0;
     for (;;)
     {
@@ -218,12 +230,15 @@ int write_maze(struct maze_t maze, FILE* fp)
 
         walls = ~get_action(maze, (struct location_t) { row - 1, column }) & 0x0F;
 
-        fprintf(fp, walls & 0x02 ? "####" : (walls & 0x01 ? "#   " : "    "));
+        fprintf_result = fprintf(fp, walls & 0x02 ? "####" : (walls & 0x04 ? "#   " : "    "));
+        if (fprintf_result != 4) return -1;
 
         column++;
     }
 
-    fprintf(fp, walls & 0x01 ? "#\n" : " \n");
+    // Write out any extra characters for the south-east corner of the maze, followed by the end of the line.
+    fprintf_result = fprintf(fp, walls & 0x03 ? "#\n" : " \n");
+    if (fprintf_result != 2) return -1;
 
     return 0;
 }
