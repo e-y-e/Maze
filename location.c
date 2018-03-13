@@ -2,13 +2,19 @@
 
 
 /**
+ * \internal
+ *
  * Calculates the absolute difference between two unsigned integers.
  *
  * This helper function allows the effective distance between two unsigned
  * integers to be calculated without having to convert to a signed
  * representation.
  *
- * Returns: the absolute difference between the two unsigned integers.
+ * \param [in] a The first of the unsigned integers.
+ * \param [in] b The second of the unsigned integers.
+ *
+ * \returns
+ *     The absolute difference between the two unsigned integers.
  */
 static size_t abs_difference(size_t a, size_t b)
 {

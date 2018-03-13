@@ -19,7 +19,7 @@ LDFLAGS := -fuse-ld=lld
 OPT_CFLAGS := -flto -O2 -Rpass=.* -Rpass-missed=.* -Rpass-analysis=.*
 
 
-.PHONY: debug release profile use-profile clean
+.PHONY: debug profile release clean
 
 
 # Define additional flags for debug build.

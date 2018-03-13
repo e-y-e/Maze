@@ -23,6 +23,8 @@ enum action_t get_action(struct maze_t maze, struct location_t location)
 }
 
 /**
+ * \internal
+ *
  * Gets all the children reachable from a given node in a maze.
  *
  * This helper function generates the nodes reachable from the given node by
@@ -30,6 +32,12 @@ enum action_t get_action(struct maze_t maze, struct location_t location)
  * location and constructing the child nodes from the results. Each child node
  * is appended to the given list, unless the child node is among those already
  * present in the given list of explored nodes.
+ *
+ * \param [out] out A pointer to the node list to which the child nodes are
+ * appended.
+ * \param [in] node A pointer to the parent node.
+ * \param [in] explored The list of currently explored node.
+ * \param [in] maze The maze that the nodes are contained within.
  */
 static void get_children(struct node_list_t* out, struct node_t* node, struct node_list_t explored, struct maze_t maze)
 {
@@ -78,13 +86,18 @@ static void get_children(struct node_list_t* out, struct node_t* node, struct no
 }
 
 /**
+ * \internal
+ *
  * Calculate the estimated cost of choosing a given node.
  *
  * This helper function simply estimates the cost of the path via the given node
  * to the end of the maze. This will always be an underestimate of the true path
  * cost.
  *
- * Returns:
+ * \param [in] node The chosen node.
+ * \param [in] maze The maze that the node is contained within.
+ *
+ * \returns
  *     The estimated cost of choosing the given node.
  */
 static size_t cost_estimate(struct node_t node, struct maze_t maze)
@@ -93,6 +106,8 @@ static size_t cost_estimate(struct node_t node, struct maze_t maze)
 }
 
 /**
+ * \internal
+ *
  * Get the index of the estimated best node in a list to expand for a given
  * maze.
  *
@@ -101,10 +116,13 @@ static size_t cost_estimate(struct node_t node, struct maze_t maze)
  * node is returned so that the node can be accessed and removed from the list
  * if necessary.
  *
- * Preconditions:
+ * \param [in] frontier The list of possible candidate nodes.
+ * \param [in] maze The maze that the nodes are contained within.
+ *
+ * \pre
  *     The given list must not be empty.
  *
- * Returns:
+ * \returns
  *     The index of the estimated best node in the list.
  */
 static size_t get_best_node(struct node_list_t frontier, struct maze_t maze)

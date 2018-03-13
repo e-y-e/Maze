@@ -32,10 +32,15 @@ struct maze_t
  * after allocating a section of memory for the actions, big enough to store the
  * actions for the entire maze.
  *
- * Preconditions:
+ * \param [out] out A pointer to the maze variable that will store the maze.
+ * \param [in] size The size of the maze.
+ * \param [in] start The location of the start of the maze.
+ * \param [in] end The location of the end of the maze.
+ *
+ * \pre
  *     The start and end locations must be within the maze.
  *
- * Returns:
+ * \returns
  *     -1 on failure, 0 on success.
  */
 int make_maze(struct maze_t* out, struct maze_size_t size, struct location_t start, struct location_t end);
@@ -46,7 +51,12 @@ int make_maze(struct maze_t* out, struct maze_size_t size, struct location_t sta
  * This function simply sets the action available at the given location in the
  * maze by updating the correct entry in the actions array.
  *
- * Preconditions:
+ * \param [out] maze The maze variable containing the pointer to the array of
+ * actions in which the action is to be set.
+ * \param [in] action The action to set.
+ * \param [in] location The location in the maze that the action relates to.
+ *
+ * \pre
  *     The location must be within the maze.
  */
 void set_action(struct maze_t maze, enum action_t action, struct location_t location);
@@ -57,10 +67,14 @@ void set_action(struct maze_t maze, enum action_t action, struct location_t loca
  * This function simply gets the action available at the given location in the
  * maze by finding the correct entry in the actions array.
  *
- * Preconditions:
+ * \param [in] maze The maze containing the array of actions to get the
+ * specified action from.
+ * \param [in] location The location of the specified action.
+ *
+ * \pre
  *     The location must be within the maze.
  *
- * Returns:
+ * \returns
  *     The action available at the given location.
  */
 enum action_t get_action(struct maze_t maze, struct location_t location);
@@ -73,6 +87,11 @@ enum action_t get_action(struct maze_t maze, struct location_t location);
  * to the start location. Every expanded node is inserted into the given list in
  * order, such that the final node in the list will be the start of the maze, if
  * the search was successful.
+ *
+ * \param [out] out A pointer to the node list variable that will be used to
+ * store the explored nodes in the search, including the linked list of nodes
+ * that form the path.
+ * \param [in] maze The maze to solve.
  */
 void solve_maze(struct node_list_t* out, struct maze_t maze);
 

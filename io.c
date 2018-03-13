@@ -11,12 +11,17 @@
 
 
 /**
+ * \internal
+ *
  * Read a maze size from a given file.
  *
  * This helper function simply attempts to set the properties of the given
  * maze size based on the data read from the given file.
  *
- * Returns:
+ * \param [out] out A pointer to the maze size variable to read the size to.
+ * \param [in]   fp The file handle to read data from.
+ *
+ * \returns
  *     -1 on failure, 0 on success.
  */
 static int read_size(struct maze_size_t* out, FILE* fp)
@@ -48,12 +53,17 @@ static int read_size(struct maze_size_t* out, FILE* fp)
 }
 
 /**
+ * \internal
+ *
  * Read a location from a given file.
  *
  * This helper function simply attempts to set the properties of the given
  * location based on the data read from the given file.
  *
- * Returns:
+ * \param [out] out A pointer to the location variable to read the location to.
+ * \param [in]   fp The file handle to read data from.
+ *
+ * \returns
  *     -1 on failure, 0 on success.
  */
 static int read_location(struct location_t* out, FILE* fp)
@@ -80,12 +90,18 @@ static int read_location(struct location_t* out, FILE* fp)
 }
 
 /**
+ * \internal
+ *
  * Read the actions for a maze from a given file.
  *
  * This helper function attempts to initialize all the actions in the maze based
  * on the data read from the given file.
  *
- * Returns:
+ * \param [out] out The maze variable containing the pointer to the array of
+ * actions to set.
+ * \param [in]   fp The file handle to read data from.
+ *
+ * \returns
  *     -1 on failure, 0 on success.
  */
 static int read_actions(struct maze_t maze, FILE* fp)
@@ -110,7 +126,8 @@ static int read_actions(struct maze_t maze, FILE* fp)
         // If there are no lines left to read, indicate an error.
         if (feof(fp)) return -1;
 
-        // Attempt to read a line, indicate an error on failure or buffer overflow.
+        // Attempt to read a line, indicate an error on failure or buffer
+        // overflow.
         end_ptr = fgets(line, 512, fp);
         if (end_ptr == NULL || strchr(end_ptr, '\n') == NULL) return -1;
 
@@ -189,15 +206,18 @@ int write_maze(struct maze_t maze, FILE* fp)
         {
             if (column >= columns) break;
 
-            walls = ~get_action(maze, (struct location_t) { row, column }) & 0x0F;
+            walls = ~get_action(maze, (struct location_t) { row, column })
+                  & 0x0F;
 
-            fprintf_result = fprintf(fp, walls & 0x08 ? "####" : (walls & 0x04 ? "#   " : "    "));
+            fprintf_result = fprintf(fp,
+                walls & 0x08 ? "####" : (walls & 0x04 ? "#   " : "    "));
             if (fprintf_result != 4) return -1;
 
             column++;
         }
 
-        // Write out any extra characters for the north-west corner of this row, followed by the end of the line.
+        // Write out any extra characters for the north-west corner of this row,
+        // followed by the end of the line.
         fprintf_result = fprintf(fp, walls & 0x09 ? "#\n" : " \n");
         if (fprintf_result != 2) return -1;
 
@@ -207,7 +227,8 @@ int write_maze(struct maze_t maze, FILE* fp)
         {
             if (column >= columns) break;
 
-            walls = ~get_action(maze, (struct location_t) { row, column }) & 0x0F;
+            walls = ~get_action(maze, (struct location_t) { row, column })
+                  & 0x0F;
 
             fprintf_result = fprintf(fp, walls & 0x04 ? "#   " : "    ");
             if (fprintf_result != 4) return -1;
@@ -215,7 +236,8 @@ int write_maze(struct maze_t maze, FILE* fp)
             column++;
         }
 
-        // Write out any extra characters for the east wall of this row, followed by the end of the line.
+        // Write out any extra characters for the east wall of this row,
+        // followed by the end of the line.
         fprintf_result = fprintf(fp, walls & 0x01 ? "#\n" : " \n");
         if (fprintf_result != 2) return -1;
 
@@ -228,15 +250,19 @@ int write_maze(struct maze_t maze, FILE* fp)
     {
         if (column >= columns) break;
 
-        walls = ~get_action(maze, (struct location_t) { row - 1, column }) & 0x0F;
+        walls = ~get_action(maze, (struct location_t) { row - 1, column })
+              & 0x0F;
 
-        fprintf_result = fprintf(fp, walls & 0x02 ? "####" : (walls & 0x04 ? "#   " : "    "));
+        fprintf_result = fprintf(fp, walls & 0x02 ? "####"
+                                                  : (walls & 0x04 ? "#   "
+                                                                  : "    "));
         if (fprintf_result != 4) return -1;
 
         column++;
     }
 
-    // Write out any extra characters for the south-east corner of the maze, followed by the end of the line.
+    // Write out any extra characters for the south-east corner of the maze,
+    // followed by the end of the line.
     fprintf_result = fprintf(fp, walls & 0x03 ? "#\n" : " \n");
     if (fprintf_result != 2) return -1;
 

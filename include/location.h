@@ -27,7 +27,10 @@ struct location_t
  * the square root of integers would impose an unnecessary overhead. This
  * measure is still a consistent heuristic, because the ordering is retained.
  *
- * Returns:
+ * \param [in] a The first of the locations.
+ * \param [in] b The second of the locations.
+ *
+ * \returns
  *     A consistent measure of distance between the two locations.
  */
 size_t location_distance(struct location_t a, struct location_t b);
@@ -38,7 +41,10 @@ size_t location_distance(struct location_t a, struct location_t b);
  * This function simply compares the row and column of each location for exact
  * equality.
  *
- * Returns:
+ * \param [in] a The first of the locations.
+ * \param [in] b The second of the locations.
+ *
+ * \returns
  *     Whether the two locations are equal.
  */
 bool location_equal(struct location_t a, struct location_t b);

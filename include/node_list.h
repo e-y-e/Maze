@@ -30,7 +30,10 @@ struct node_list_t
  * after allocating a section of memory for the list using malloc, big enough to
  * store the given initial capacity.
  *
- * Returns:
+ * \param [out] out A pointer to the node list variable that will be initialized.
+ * \param [in] initial_capacity The initial storage capacity of the node list.
+ *
+ * \returns
  *     -1 on failure, 0 on success.
  */
 int make_list(struct node_list_t* out, size_t initial_capacity);
@@ -42,7 +45,10 @@ int make_list(struct node_list_t* out, size_t initial_capacity);
  * reallocating a section of memory using realloc, big enough to store the new
  * capacity, and updates the properties of the list to reflect the new capacity.
  *
- * Returns:
+ * \param [out] list A pointer to the list to resize.
+ * \param [in] new_capacity The new storage capacity of the node list.
+ *
+ * \returns
  *     -1 on failure, 0 on success.
  */
 int resize_list(struct node_list_t* list, size_t new_capacity);
@@ -53,10 +59,13 @@ int resize_list(struct node_list_t* list, size_t new_capacity);
  * This function simply indexes the given list at the given index to retrieve a
  * pointer to the node at that index.
  *
- * Preconditions:
+ * \param [in] list The node list.
+ * \param [in] index The index of the node.
+ *
+ * \pre
  *     The index must be within the length of the given list.
  *
- * Returns:
+ * \returns
  *     A pointer to the node at the given index.
  */
 struct node_t* get_node(struct node_list_t list, size_t index);
@@ -69,11 +78,15 @@ struct node_t* get_node(struct node_list_t list, size_t index);
  * using direct memory operations to insert the node into the correct location
  * in memory, shifting the contents of the list where necessary.
  *
- * Preconditions:
+ * \param [out] list A pointer to the node list to insert the node into.
+ * \param [in] node The node to insert.
+ * \param [in] index The index to insert the node at.
+ *
+ * \pre
  *     The index must be within the length of the given list, accounting for the
  *     additional item.
  *
- * Returns:
+ * \returns
  *     -1 on failure, 0 on success.
  */
 int insert_node(struct node_list_t* list, struct node_t node, size_t index);
@@ -85,7 +98,10 @@ int insert_node(struct node_list_t* list, struct node_t node, size_t index);
  * using direct memory operations to remove the node from the correct location
  * in memory, shifting the contents of the list where necessary.
  *
- * Preconditions:
+ * \param [out] list A pointer to the node list to remove the node from.
+ * \param [in] index The index of the node.
+ *
+ * \pre
  *     The index must be within the length of the given list.
  */
 void remove_node(struct node_list_t* list, size_t index);
@@ -97,7 +113,10 @@ void remove_node(struct node_list_t* list, size_t index);
  * location that is the same as the given location, and indicates whether it was
  * able to find one.
  *
- * Returns:
+ * \param [in] list The node list that will be searched.
+ * \param [in] location The location of the node to be found.
+ *
+ * \returns
  *     Whether there is a node with the given location in the list.
  */
 bool contains_node(struct node_list_t list, struct location_t location);

@@ -27,10 +27,13 @@ struct maze_t;
  * If the location has a wall to the south the variable has 2 added to it.
  * If the location has a wall to the east the variable has 1 added to it.
  *
- * Preconditions:
+ * \param [out] out A pointer to the maze variable that will store the maze.
+ * \param [in] fp The file handle to read data from.
+ *
+ * \pre
  *     The file pointer must not be NULL.
  *
- * Returns:
+ * \returns
  *     -1 on failure, 0 on success.
  */
 int read_maze(struct maze_t* out, FILE* fp);
@@ -44,15 +47,20 @@ int read_maze(struct maze_t* out, FILE* fp);
  * an additional row and/or column to represent the edge. As an example, a 3x3
  * maze might be printed as follows:
  *
+ * \code{.unparsed}
  * #############
  * #           #
  * #########   #
  * #       #   #
- * #   #   #   #
+ * #   #       #
  * #   #       #
  * #############
+ * \endcode
  *
- * Preconditions:
+ * \param [in] maze The maze to write to the file.
+ * \param [in] fp The file handle to write the maze to.
+ *
+ * \pre
  *     The file pointer must not be NULL.
  */
 int write_maze(struct maze_t maze, FILE* fp);
