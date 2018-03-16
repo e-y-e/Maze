@@ -18,10 +18,8 @@
  * \returns
  *     The absolute difference between the two unsigned integers.
  */
-static size_t abs_difference(size_t a, size_t b)
-{
-    return a < b ? b - a : a - b;
-}
+static size_t abs_difference(size_t a, size_t b);
+
 
 // Define location_distance (location.h).
 size_t location_distance(struct location_t a, struct location_t b)
@@ -51,4 +49,10 @@ size_t location_distance(struct location_t a, struct location_t b)
 bool location_equal(struct location_t a, struct location_t b)
 {
     return a.row == b.row && a.column == b.column;
+}
+
+// Define abs_difference (location.c).
+static size_t abs_difference(size_t a, size_t b)
+{
+    return a < b ? b - a : a - b;
 }

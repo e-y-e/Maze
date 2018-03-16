@@ -36,7 +36,7 @@ struct maze_size_t
  * \returns
  *     Whether the given location is within a maze of the given size.
  */
-bool check_location(struct maze_size_t maze, struct location_t location);
+bool check_location(struct maze_size_t size, struct location_t location);
 
 
 #endif // MAZE_SIZE_H

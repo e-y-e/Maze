@@ -9,19 +9,6 @@
 #include <stdlib.h>
 
 
-// Define get_action (maze.h).
-enum action_t get_action(struct maze_t maze, struct location_t location)
-{
-    // Assert that the given location is within the maze.
-    assert(check_location(maze.size, location));
-
-    // Find the index to the action based on the location.
-    size_t index = location.row * maze.size.columns + location.column;
-
-    // Get the correct action from the pair of actions
-    return index & 1 ? maze.actions[index / 2].b : maze.actions[index / 2].a;
-}
-
 /**
  * \internal
  *
@@ -42,51 +29,7 @@ enum action_t get_action(struct maze_t maze, struct location_t location)
  * \param [in]     maze
  *     The maze that the nodes are contained within.
  */
-static void get_children(struct node_list_t* list, struct node_t* node, struct node_list_t explored, struct maze_t maze)
-{
-    struct location_t location = node->location;
-
-    // Get the action available for the location.
-    enum action_t action = get_action(maze, location);
-
-    // Create a generic child node variable for reuse in each action.
-    struct node_t child;
-    child.parent = node;
-
-    // Insert all the child nodes reachable by the action to the list.
-    if (action & NORTH)
-    {
-        child.location = (struct location_t) { location.row - 1, location.column };
-        if (!contains_node(explored, child.location))
-        {
-            insert_node(list, child, list->length);
-        }
-    }
-    if (action & WEST)
-    {
-        child.location = (struct location_t) { location.row, location.column - 1 };
-        if (!contains_node(explored, child.location))
-        {
-            insert_node(list, child, list->length);
-        }
-    }
-    if (action & SOUTH)
-    {
-        child.location = (struct location_t) { location.row + 1, location.column };
-        if (!contains_node(explored, child.location))
-        {
-            insert_node(list, child, list->length);
-        }
-    }
-    if (action & EAST)
-    {
-        child.location = (struct location_t) { location.row, location.column + 1 };
-        if (!contains_node(explored, child.location))
-        {
-            insert_node(list, child, list->length);
-        }
-    }
-}
+static void get_children(struct node_list_t* list, struct node_t* node, struct node_list_t explored, struct maze_t maze);
 
 /**
  * \internal
@@ -105,10 +48,7 @@ static void get_children(struct node_list_t* list, struct node_t* node, struct n
  * \returns
  *     The estimated cost of choosing a node at the given location.
  */
-static size_t cost_estimate(struct location_t location, struct maze_t maze)
-{
-    return 1 + location_distance(location, maze.end);
-}
+static size_t cost_estimate(struct location_t location, struct maze_t maze);
 
 /**
  * \internal
@@ -132,40 +72,8 @@ static size_t cost_estimate(struct location_t location, struct maze_t maze)
  * \returns
  *     The index of the estimated best node in the list.
  */
-static size_t get_best_node(struct node_list_t frontier, struct maze_t maze)
-{
-    // Assert that the frontier is not empty.
-    assert(frontier.length > 0);
+static size_t get_best_node(struct node_list_t frontier, struct maze_t maze);
 
-    // Store the best node index and its estimated cost. Assume for now that the
-    // first node is the best node.
-    size_t best_index = 0;
-    size_t best_cost = cost_estimate(get_node(frontier, 0)->location, maze);
-
-    size_t length = frontier.length;
-
-    // Search the remaining nodes for the best node.
-    size_t index = 1;
-    size_t cost = 0;
-    for (;;)
-    {
-        if (index >= length) break;
-
-        // Calculate the estimated cost of choosing the node at this index.
-        cost = cost_estimate(get_node(frontier, index)->location, maze);
-
-        // If necessary, update the best node.
-        if (cost < best_cost)
-        {
-            best_index = index;
-            best_cost = cost;
-        }
-
-        index++;
-    }
-
-    return best_index;
-}
 
 // Define make_maze (maze.h).
 int make_maze(struct maze_t* maze, struct maze_size_t size, struct location_t start, struct location_t end)
@@ -214,6 +122,19 @@ void set_action(struct maze_t maze, enum action_t action, struct location_t loca
     }
 }
 
+// Define get_action (maze.h).
+enum action_t get_action(struct maze_t maze, struct location_t location)
+{
+    // Assert that the given location is within the maze.
+    assert(check_location(maze.size, location));
+
+    // Find the index to the action based on the location.
+    size_t index = location.row * maze.size.columns + location.column;
+
+    // Get the correct action from the pair of actions
+    return index & 1 ? maze.actions[index / 2].b : maze.actions[index / 2].a;
+}
+
 // Define solve_maze (maze.h).
 void solve_maze(struct node_list_t* list, struct maze_t maze)
 {
@@ -247,7 +168,7 @@ void solve_maze(struct node_list_t* list, struct maze_t maze)
         node = *get_node(frontier, node_index);
 
         // Add the node to the list of out nodes.
-        insert_node(out, node, out->length);
+        insert_node(list, node, list->length);
 
         // If the node is the start node, the search is complete.
         if (location_equal(node.location, maze.start)) return;
@@ -257,6 +178,95 @@ void solve_maze(struct node_list_t* list, struct maze_t maze)
 
         // Generate the child nodes of the current node, appending them to the
         // frontier.
-        get_children(&frontier, get_node(*out, out->length - 1), *out, maze);
+        get_children(&frontier, get_node(*list, list->length - 1), *list, maze);
     }
+}
+
+// Define get_children (maze.c).
+static void get_children(struct node_list_t* list, struct node_t* node, struct node_list_t explored, struct maze_t maze)
+{
+    struct location_t location = node->location;
+
+    // Get the action available for the location.
+    enum action_t action = get_action(maze, location);
+
+    // Create a generic child node variable for reuse in each action.
+    struct node_t child;
+    child.parent = node;
+
+    // Insert all the child nodes reachable by the action to the list.
+    if (action & NORTH)
+    {
+        child.location = (struct location_t) { location.row - 1, location.column };
+        if (!contains_node(explored, child.location))
+        {
+            insert_node(list, child, list->length);
+        }
+    }
+    if (action & WEST)
+    {
+        child.location = (struct location_t) { location.row, location.column - 1 };
+        if (!contains_node(explored, child.location))
+        {
+            insert_node(list, child, list->length);
+        }
+    }
+    if (action & SOUTH)
+    {
+        child.location = (struct location_t) { location.row + 1, location.column };
+        if (!contains_node(explored, child.location))
+        {
+            insert_node(list, child, list->length);
+        }
+    }
+    if (action & EAST)
+    {
+        child.location = (struct location_t) { location.row, location.column + 1 };
+        if (!contains_node(explored, child.location))
+        {
+            insert_node(list, child, list->length);
+        }
+    }
+}
+
+// Define cost_estimate (maze.c).
+static size_t cost_estimate(struct location_t location, struct maze_t maze)
+{
+    return 1 + location_distance(location, maze.end);
+}
+
+// Define get_best_node (maze.c).
+static size_t get_best_node(struct node_list_t frontier, struct maze_t maze)
+{
+    // Assert that the frontier is not empty.
+    assert(frontier.length > 0);
+
+    // Store the best node index and its estimated cost. Assume for now that the
+    // first node is the best node.
+    size_t best_index = 0;
+    size_t best_cost = cost_estimate(get_node(frontier, 0)->location, maze);
+
+    size_t length = frontier.length;
+
+    // Search the remaining nodes for the best node.
+    size_t index = 1;
+    size_t cost = 0;
+    for (;;)
+    {
+        if (index >= length) break;
+
+        // Calculate the estimated cost of choosing the node at this index.
+        cost = cost_estimate(get_node(frontier, index)->location, maze);
+
+        // If necessary, update the best node.
+        if (cost < best_cost)
+        {
+            best_index = index;
+            best_cost = cost;
+        }
+
+        index++;
+    }
+
+    return best_index;
 }
