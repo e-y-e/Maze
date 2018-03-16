@@ -27,6 +27,8 @@ struct location_t
  * the square root of integers would impose an unnecessary overhead. This
  * measure is still a consistent heuristic, because the ordering is retained.
  *
+ * \see test_location_distance()
+ *
  * \param [in] a The first of the locations.
  * \param [in] b The second of the locations.
  *
@@ -34,6 +36,17 @@ struct location_t
  *     A consistent measure of distance between the two locations.
  */
 size_t location_distance(struct location_t a, struct location_t b);
+
+/**
+ * Tests the function location_distance().
+ *
+ * This function tests the location_distance() function with a series of
+ * locations that should be a specific distance from each other. Since the
+ * location_distance() function is not precise, it simply asserts that the
+ * distance is in the correct range, and that locations further from each other
+ * have a greater distance.
+ */
+void test_location_distance(void);
 
 /**
  * Determines if two locations are equal to each other.

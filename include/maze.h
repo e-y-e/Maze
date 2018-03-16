@@ -88,12 +88,24 @@ enum action_t get_action(struct maze_t maze, struct location_t location);
  * order, such that the final node in the list will be the start of the maze, if
  * the search was successful.
  *
+ * \see test_solve_maze()
+ *
  * \param [out] out A pointer to the node list variable that will be used to
  * store the explored nodes in the search, including the linked list of nodes
  * that form the path.
  * \param [in] maze The maze to solve.
  */
 void solve_maze(struct node_list_t* out, struct maze_t maze);
+
+/**
+ * Tests the function solve_maze().
+ *
+ * This function runs through a series of test cases defined in the file
+ * test.txt. The test cases are each a 5x5 maze, some of which have no solution.
+ * The function asserts that for those with a solution, the solve_maze()
+ * function provides a complete path from start to finish.
+ */
+void test_solve_maze(void);
 
 
 #endif // MAZE_H

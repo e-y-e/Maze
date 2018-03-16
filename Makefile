@@ -19,12 +19,16 @@ LDFLAGS := -fuse-ld=lld
 OPT_CFLAGS := -flto -O2 -Rpass=.* -Rpass-missed=.* -Rpass-analysis=.*
 
 
-.PHONY: debug profile release clean
+.PHONY: debug test profile release clean
 
 
 # Define additional flags for debug build.
 debug: CFLAGS += -Werror -O0 -glldb
 debug: $(BUILD_DIR)/$(TARGET)
+
+# Define additional flags for test build.
+test: CFLAGS += -DTEST -Werror -O0 -glldb
+test: $(BUILD_DIR)/$(TARGET)
 
 # Define additional flags for profile build.
 profile: CFLAGS += $(OPT_CFLAGS) -fprofile-instr-generate="$(PROF_DIR)/%p.profraw"
