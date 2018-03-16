@@ -195,37 +195,20 @@ static void get_children(struct node_list_t* list, struct node_t* node, struct n
     child.parent = node;
 
     // Insert all the child nodes reachable by the action to the list.
-    if (action & NORTH)
+    enum action_t sole_action;
+    size_t bitmask = (1 << 0);
+    for (;;)
     {
-        child.location = (struct location_t) { location.row - 1, location.column };
-        if (!contains_node(explored, child.location))
-        {
-            insert_node(list, child, list->length);
-        }
-    }
-    if (action & WEST)
-    {
-        child.location = (struct location_t) { location.row, location.column - 1 };
-        if (!contains_node(explored, child.location))
-        {
-            insert_node(list, child, list->length);
-        }
-    }
-    if (action & SOUTH)
-    {
-        child.location = (struct location_t) { location.row + 1, location.column };
-        if (!contains_node(explored, child.location))
-        {
-            insert_node(list, child, list->length);
-        }
-    }
-    if (action & EAST)
-    {
-        child.location = (struct location_t) { location.row, location.column + 1 };
-        if (!contains_node(explored, child.location))
-        {
-            insert_node(list, child, list->length);
-        }
+        if (bitmask >= (1 << 4)) break;
+
+        sole_action = action & bitmask;
+        bitmask <<= 1;
+        if (sole_action) continue;
+
+        child.location = action_result(location, sole_action);
+        if (contains_node(explored, child.location)) continue;
+
+        insert_node(list, child, list->length);
     }
 }
 
