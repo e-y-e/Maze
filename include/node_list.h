@@ -32,13 +32,16 @@ struct node_list_t
  * after allocating a section of memory for the list using malloc, big enough to
  * store the given initial capacity.
  *
- * \param [out] out A pointer to the node list variable that will be initialized.
+ * \param [out] maze A pointer to the node list variable that will be initialized.
  * \param [in] initial_capacity The initial storage capacity of the node list.
+ *
+ * \pre
+ *     The pointer to the node list variable should not be NULL.
  *
  * \returns
  *     -1 on failure, 0 on success.
  */
-int make_list(struct node_list_t* out, size_t initial_capacity);
+int make_list(struct node_list_t* list, size_t initial_capacity);
 
 /**
  * Resizes a node list to accomodate an updated capacity.
@@ -49,6 +52,9 @@ int make_list(struct node_list_t* out, size_t initial_capacity);
  *
  * \param [out] list A pointer to the list to resize.
  * \param [in] new_capacity The new storage capacity of the node list.
+ *
+ * \pre
+ *     The pointer to the node list variable should not be NULL.
  *
  * \returns
  *     -1 on failure, 0 on success.
@@ -85,6 +91,7 @@ struct node_t* get_node(struct node_list_t list, size_t index);
  * \param [in] index The index to insert the node at.
  *
  * \pre
+ *     The pointer to the node list variable should not be NULL.
  *     The index must be within the length of the given list, accounting for the
  *     additional item.
  *
@@ -104,6 +111,7 @@ int insert_node(struct node_list_t* list, struct node_t node, size_t index);
  * \param [in] index The index of the node.
  *
  * \pre
+ *     The pointer to the node list variable should not be NULL.
  *     The index must be within the length of the given list.
  */
 void remove_node(struct node_list_t* list, size_t index);

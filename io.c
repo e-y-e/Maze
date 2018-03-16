@@ -155,7 +155,9 @@ static int read_actions(struct maze_t maze, FILE* fp)
 // Define read_maze (io.h)
 int read_maze(struct maze_t* maze, FILE* fp)
 {
-    // Assert that the stream is valid.
+    // Assert that the pointer to the maze variable is valid.
+    assert(maze != NULL);
+    // Assert that the file handle is valid.
     assert(fp != NULL);
 
     // Read the size of the maze.
@@ -185,6 +187,7 @@ int read_maze(struct maze_t* maze, FILE* fp)
 // Define write_maze (io.h)
 int write_maze(struct maze_t maze, FILE* fp)
 {
+    // Assert that the file handle is valid.
     assert(fp != NULL);
 
     size_t rows = maze.size.rows;

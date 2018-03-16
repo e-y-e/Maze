@@ -161,8 +161,10 @@ static size_t get_best_node(struct node_list_t frontier, struct maze_t maze)
 }
 
 // Define make_maze (maze.h).
-int make_maze(struct maze_t* out, struct maze_size_t size, struct location_t start, struct location_t end)
+int make_maze(struct maze_t* maze, struct maze_size_t size, struct location_t start, struct location_t end)
 {
+    // Assert that the pointer to the maze variable is valid.
+    assert(maze != NULL);
     // Assert that the given locations are within the maze.
     assert(check_location(size, start));
     assert(check_location(size, end));
@@ -177,10 +179,10 @@ int make_maze(struct maze_t* out, struct maze_size_t size, struct location_t sta
     if (ptr == NULL) return -1;
 
     // Initialize maze properties.
-    out->actions = (struct action_pair_t*) ptr;
-    out->size = size;
-    out->start = start;
-    out->end = end;
+    maze->actions = (struct action_pair_t*) ptr;
+    maze->size = size;
+    maze->start = start;
+    maze->end = end;
 
     return 0;
 }
@@ -206,8 +208,11 @@ void set_action(struct maze_t maze, enum action_t action, struct location_t loca
 }
 
 // Define solve_maze (maze.h).
-void solve_maze(struct node_list_t* out, struct maze_t maze)
+void solve_maze(struct node_list_t* list, struct maze_t maze)
 {
+    // Assert that the pointer to the node list variable is valid.
+    assert(list != NULL);
+
     // Define the maximum length for lists of nodes in the maze.
     size_t max_length = maze.size.rows * maze.size.columns;
 

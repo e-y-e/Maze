@@ -32,18 +32,19 @@ struct maze_t
  * after allocating a section of memory for the actions, big enough to store the
  * actions for the entire maze.
  *
- * \param [out] out A pointer to the maze variable that will store the maze.
+ * \param [out] maze A pointer to the maze variable that will store the maze.
  * \param [in] size The size of the maze.
  * \param [in] start The location of the start of the maze.
  * \param [in] end The location of the end of the maze.
  *
  * \pre
+ *     The pointer to the maze variable must not be NULL.
  *     The start and end locations must be within the maze.
  *
  * \returns
  *     -1 on failure, 0 on success.
  */
-int make_maze(struct maze_t* out, struct maze_size_t size, struct location_t start, struct location_t end);
+int make_maze(struct maze_t* maze, struct maze_size_t size, struct location_t start, struct location_t end);
 
 /**
  * Sets the action available at a given location in a maze.
@@ -94,8 +95,11 @@ enum action_t get_action(struct maze_t maze, struct location_t location);
  * store the explored nodes in the search, including the linked list of nodes
  * that form the path.
  * \param [in] maze The maze to solve.
+ *
+ * \pre
+ *     The pointer to the node list variable must not be NULL.
  */
-void solve_maze(struct node_list_t* out, struct maze_t maze);
+void solve_maze(struct node_list_t* list, struct maze_t maze);
 
 /**
  * Tests the function solve_maze().

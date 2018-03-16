@@ -9,8 +9,11 @@
 
 
 // Define make_list (node_list.h).
-int make_list(struct node_list_t* out, size_t initial_capacity)
+int make_list(struct node_list_t* list, size_t initial_capacity)
 {
+    // Assert that the pointer to the node list variable is valid.
+    assert(list != NULL);
+
     // Allocate required memory.
     void* ptr = malloc(initial_capacity * sizeof(struct node_t));
 
@@ -18,9 +21,9 @@ int make_list(struct node_list_t* out, size_t initial_capacity)
     if (ptr == NULL && initial_capacity != 0) return -1;
 
     // Initialize list properties.
-    out->nodes = (struct node_t*) ptr;
-    out->length = 0;
-    out->capacity = initial_capacity;
+    list->nodes = (struct node_t*) ptr;
+    list->length = 0;
+    list->capacity = initial_capacity;
 
     return 0;
 }
@@ -28,6 +31,9 @@ int make_list(struct node_list_t* out, size_t initial_capacity)
 // Define resize_list (node_list.h).
 int resize_list(struct node_list_t* list, size_t new_capacity)
 {
+    // Assert that the pointer to the node list variable is valid.
+    assert(list != NULL);
+
     // Allocate required memory.
     void* ptr = realloc((void*) list->nodes, new_capacity * sizeof(struct node_t));
 
@@ -53,6 +59,8 @@ struct node_t* get_node(struct node_list_t list, size_t index)
 // Define insert_node (node_list.h).
 int insert_node(struct node_list_t* list, struct node_t node, size_t index)
 {
+    // Assert that the pointer to the node list variable is valid.
+    assert(list != NULL);
     // Assert that the index cannot be past where the end of the list would be
     // after inserting another node.
     assert(index < list->length + 1);
@@ -86,6 +94,8 @@ int insert_node(struct node_list_t* list, struct node_t node, size_t index)
 // Define remove_node (node_list.h).
 void remove_node(struct node_list_t* list, size_t index)
 {
+    // Assert that the pointer to the node list variable is valid.
+    assert(list != NULL);
     // Assert that the index cannot be past the end of the list.
     assert(index < list->length);
 

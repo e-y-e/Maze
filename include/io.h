@@ -27,16 +27,17 @@ struct maze_t;
  * If the location has a wall to the south the variable has 2 added to it.
  * If the location has a wall to the east the variable has 1 added to it.
  *
- * \param [out] out A pointer to the maze variable that will store the maze.
+ * \param [out] maze A pointer to the maze variable that will store the maze.
  * \param [in] fp The file handle to read data from.
  *
  * \pre
- *     The file pointer must not be NULL.
+ *     The pointer to the maze variable must not be NULL.
+ *     The file handle must not be NULL.
  *
  * \returns
  *     -1 on failure, 0 on success.
  */
-int read_maze(struct maze_t* out, FILE* fp);
+int read_maze(struct maze_t* maze, FILE* fp);
 
 /**
  * Writes an ascii character representation of a maze to a file.
@@ -62,6 +63,9 @@ int read_maze(struct maze_t* out, FILE* fp);
  *
  * \pre
  *     The file pointer must not be NULL.
+ *
+ * \returns
+ *     -1 on failure, 0 on success.
  */
 int write_maze(struct maze_t maze, FILE* fp);
 
