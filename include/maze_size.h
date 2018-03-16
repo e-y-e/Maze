@@ -28,8 +28,10 @@ struct maze_size_t
  * columns in the maze, and determines whether the location is within its
  * bounds.
  *
- * \param [in] size The size of the maze in which the location should be.
- * \param [in] location The location to check.
+ * \param [in] size
+ *     The size of the maze in which the location should be.
+ * \param [in] location
+ *     The location to check.
  *
  * \returns
  *     Whether the given location is within a maze of the given size.

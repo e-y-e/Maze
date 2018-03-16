@@ -18,13 +18,15 @@
  * This helper function simply attempts to set the properties of the given
  * maze size based on the data read from the given file.
  *
- * \param [out] out A pointer to the maze size variable to read the size to.
- * \param [in]   fp The file handle to read data from.
+ * \param [out] size
+ *     A pointer to the maze size variable to read the size to.
+ * \param [in]  fp
+ *     The file handle to read data from.
  *
  * \returns
  *     -1 on failure, 0 on success.
  */
-static int read_size(struct maze_size_t* out, FILE* fp)
+static int read_size(struct maze_size_t* size, FILE* fp)
 {
     // If there are no lines to read, indicate an error.
     if (feof(fp)) return -1;
@@ -46,8 +48,8 @@ static int read_size(struct maze_size_t* out, FILE* fp)
     size_t columns = strtoul(end_ptr, &end_ptr, 10);
     if (columns == 0) return -1;
 
-    out->rows = rows;
-    out->columns = columns;
+    size->rows = rows;
+    size->columns = columns;
 
     return 0;
 }
@@ -60,13 +62,15 @@ static int read_size(struct maze_size_t* out, FILE* fp)
  * This helper function simply attempts to set the properties of the given
  * location based on the data read from the given file.
  *
- * \param [out] out A pointer to the location variable to read the location to.
- * \param [in]   fp The file handle to read data from.
+ * \param [out] location
+ *     A pointer to the location variable to read the location to.
+ * \param [in]  fp
+ *     The file handle to read data from.
  *
  * \returns
  *     -1 on failure, 0 on success.
  */
-static int read_location(struct location_t* out, FILE* fp)
+static int read_location(struct location_t* location, FILE* fp)
 {
     // If there are no lines to read, indicate an error.
     if (feof(fp)) return -1;
@@ -81,10 +85,10 @@ static int read_location(struct location_t* out, FILE* fp)
     if (end_ptr == NULL || strchr(end_ptr, '\n') == NULL) return -1;
 
     // Convert the first number in the buffer to the row.
-    out->row = strtoul(end_ptr, &end_ptr, 10);
+    location->row = strtoul(end_ptr, &end_ptr, 10);
 
     // Convert the next number in the buffer to the column.
-    out->column = strtoul(end_ptr, &end_ptr, 10);
+    location->column = strtoul(end_ptr, &end_ptr, 10);
 
     return 0;
 }
@@ -97,9 +101,10 @@ static int read_location(struct location_t* out, FILE* fp)
  * This helper function attempts to initialize all the actions in the maze based
  * on the data read from the given file.
  *
- * \param [out] out The maze variable containing the pointer to the array of
- * actions to set.
- * \param [in]   fp The file handle to read data from.
+ * \param [in,out] maze
+ *     The maze variable containing the pointer to the array of actions to set.
+ * \param [in]     fp
+ *     The file handle to read data from.
  *
  * \returns
  *     -1 on failure, 0 on success.

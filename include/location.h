@@ -29,8 +29,10 @@ struct location_t
  *
  * \see test_location_distance()
  *
- * \param [in] a The first of the locations.
- * \param [in] b The second of the locations.
+ * \param [in] a
+ *     The first of the locations.
+ * \param [in] b
+ *     The second of the locations.
  *
  * \returns
  *     A consistent measure of distance between the two locations.
@@ -54,8 +56,10 @@ void test_location_distance(void);
  * This function simply compares the row and column of each location for exact
  * equality.
  *
- * \param [in] a The first of the locations.
- * \param [in] b The second of the locations.
+ * \param [in] a
+ *     The first of the locations.
+ * \param [in] b
+ *     The second of the locations.
  *
  * \returns
  *     Whether the two locations are equal.

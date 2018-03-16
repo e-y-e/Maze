@@ -10,8 +10,10 @@
  * integers to be calculated without having to convert to a signed
  * representation.
  *
- * \param [in] a The first of the unsigned integers.
- * \param [in] b The second of the unsigned integers.
+ * \param [in] a
+ *     The first of the unsigned integers.
+ * \param [in] b
+ *     The second of the unsigned integers.
  *
  * \returns
  *     The absolute difference between the two unsigned integers.

@@ -32,13 +32,18 @@ struct maze_t
  * after allocating a section of memory for the actions, big enough to store the
  * actions for the entire maze.
  *
- * \param [out] maze A pointer to the maze variable that will store the maze.
- * \param [in] size The size of the maze.
- * \param [in] start The location of the start of the maze.
- * \param [in] end The location of the end of the maze.
+ * \param [out] maze
+ *     A pointer to the maze variable that will store the maze.
+ * \param [in]  size
+ *     The size of the maze.
+ * \param [in]  start
+ *     The location of the start of the maze.
+ * \param [in]  end
+ *     The location of the end of the maze.
  *
  * \pre
  *     The pointer to the maze variable must not be NULL.
+ * \pre
  *     The start and end locations must be within the maze.
  *
  * \returns
@@ -52,10 +57,13 @@ int make_maze(struct maze_t* maze, struct maze_size_t size, struct location_t st
  * This function simply sets the action available at the given location in the
  * maze by updating the correct entry in the actions array.
  *
- * \param [out] maze The maze variable containing the pointer to the array of
- * actions in which the action is to be set.
- * \param [in] action The action to set.
- * \param [in] location The location in the maze that the action relates to.
+ * \param [in,out] maze
+ *     The maze variable containing the pointer to the array of actions in which
+ *     the action is to be set.
+ * \param [in]     action
+ *     The action to set.
+ * \param [in]     location
+ *     The location in the maze that the action relates to.
  *
  * \pre
  *     The location must be within the maze.
@@ -68,9 +76,11 @@ void set_action(struct maze_t maze, enum action_t action, struct location_t loca
  * This function simply gets the action available at the given location in the
  * maze by finding the correct entry in the actions array.
  *
- * \param [in] maze The maze containing the array of actions to get the
- * specified action from.
- * \param [in] location The location of the specified action.
+ * \param [in] maze
+ *     The maze containing the array of actions to get the specified action
+ *     from.
+ * \param [in] location
+ *     The location of the specified action.
  *
  * \pre
  *     The location must be within the maze.
@@ -91,10 +101,12 @@ enum action_t get_action(struct maze_t maze, struct location_t location);
  *
  * \see test_solve_maze()
  *
- * \param [out] out A pointer to the node list variable that will be used to
- * store the explored nodes in the search, including the linked list of nodes
- * that form the path.
- * \param [in] maze The maze to solve.
+ * \param [out] list
+ *     A pointer to the node list variable that will be used to store the
+ *     explored nodes in the search, including the linked list of nodes that
+ *     form the path.
+ * \param [in]  maze
+ *     The maze to solve.
  *
  * \pre
  *     The pointer to the node list variable must not be NULL.

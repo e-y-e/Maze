@@ -33,13 +33,16 @@ enum action_t get_action(struct maze_t maze, struct location_t location)
  * is appended to the given list, unless the child node is among those already
  * present in the given list of explored nodes.
  *
- * \param [out] out A pointer to the node list to which the child nodes are
- * appended.
- * \param [in] node A pointer to the parent node.
- * \param [in] explored The list of currently explored node.
- * \param [in] maze The maze that the nodes are contained within.
+ * \param [in,out] list
+ *     A pointer to the node list to which the child nodes are appended.
+ * \param [in]     node
+ *     A pointer to the parent node.
+ * \param [in]     explored
+ *     The list of currently explored node.
+ * \param [in]     maze
+ *     The maze that the nodes are contained within.
  */
-static void get_children(struct node_list_t* out, struct node_t* node, struct node_list_t explored, struct maze_t maze)
+static void get_children(struct node_list_t* list, struct node_t* node, struct node_list_t explored, struct maze_t maze)
 {
     struct location_t location = node->location;
 
@@ -56,7 +59,7 @@ static void get_children(struct node_list_t* out, struct node_t* node, struct no
         child.location = (struct location_t) { location.row - 1, location.column };
         if (!contains_node(explored, child.location))
         {
-            insert_node(out, child, out->length);
+            insert_node(list, child, list->length);
         }
     }
     if (action & WEST)
@@ -64,7 +67,7 @@ static void get_children(struct node_list_t* out, struct node_t* node, struct no
         child.location = (struct location_t) { location.row, location.column - 1 };
         if (!contains_node(explored, child.location))
         {
-            insert_node(out, child, out->length);
+            insert_node(list, child, list->length);
         }
     }
     if (action & SOUTH)
@@ -72,7 +75,7 @@ static void get_children(struct node_list_t* out, struct node_t* node, struct no
         child.location = (struct location_t) { location.row + 1, location.column };
         if (!contains_node(explored, child.location))
         {
-            insert_node(out, child, out->length);
+            insert_node(list, child, list->length);
         }
     }
     if (action & EAST)
@@ -80,7 +83,7 @@ static void get_children(struct node_list_t* out, struct node_t* node, struct no
         child.location = (struct location_t) { location.row, location.column + 1 };
         if (!contains_node(explored, child.location))
         {
-            insert_node(out, child, out->length);
+            insert_node(list, child, list->length);
         }
     }
 }
@@ -94,8 +97,10 @@ static void get_children(struct node_list_t* out, struct node_t* node, struct no
  * location to the end of the maze. This will always be an underestimate of the
  * true path cost.
  *
- * \param [in] location The location of the chosen node.
- * \param [in] maze The maze that the node is contained within.
+ * \param [in] location
+ *     The location of the chosen node.
+ * \param [in] maze
+ *     The maze that the node is contained within.
  *
  * \returns
  *     The estimated cost of choosing a node at the given location.
@@ -116,8 +121,10 @@ static size_t cost_estimate(struct location_t location, struct maze_t maze)
  * node is returned so that the node can be accessed and removed from the list
  * if necessary.
  *
- * \param [in] frontier The list of possible candidate nodes.
- * \param [in] maze The maze that the nodes are contained within.
+ * \param [in] frontier
+ *     The list of possible candidate nodes.
+ * \param [in] maze
+ *     The maze that the nodes are contained within.
  *
  * \pre
  *     The given list must not be empty.
