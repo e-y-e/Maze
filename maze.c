@@ -88,21 +88,21 @@ static void get_children(struct node_list_t* out, struct node_t* node, struct no
 /**
  * \internal
  *
- * Calculate the estimated cost of choosing a given node.
+ * Calculate the estimated cost of choosing a node at a given location.
  *
  * This helper function simply estimates the cost of the path via the given node
- * to the end of the maze. This will always be an underestimate of the true path
- * cost.
+ * location to the end of the maze. This will always be an underestimate of the
+ * true path cost.
  *
- * \param [in] node The chosen node.
+ * \param [in] location The location of the chosen node.
  * \param [in] maze The maze that the node is contained within.
  *
  * \returns
- *     The estimated cost of choosing the given node.
+ *     The estimated cost of choosing a node at the given location.
  */
-static size_t cost_estimate(struct node_t node, struct maze_t maze)
+static size_t cost_estimate(struct location_t location, struct maze_t maze)
 {
-    return 1 + location_distance(node.location, maze.end);
+    return 1 + location_distance(location, maze.end);
 }
 
 /**
@@ -133,7 +133,7 @@ static size_t get_best_node(struct node_list_t frontier, struct maze_t maze)
     // Store the best node index and its estimated cost. Assume for now that the
     // first node is the best node.
     size_t best_index = 0;
-    size_t best_cost = cost_estimate(*get_node(frontier, 0), maze);
+    size_t best_cost = cost_estimate(get_node(frontier, 0)->location, maze);
 
     size_t length = frontier.length;
 
@@ -145,7 +145,7 @@ static size_t get_best_node(struct node_list_t frontier, struct maze_t maze)
         if (index >= length) break;
 
         // Calculate the estimated cost of choosing the node at this index.
-        cost = cost_estimate(*get_node(frontier, index), maze);
+        cost = cost_estimate(get_node(frontier, index)->location, maze);
 
         // If necessary, update the best node.
         if (cost < best_cost)
