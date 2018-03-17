@@ -57,12 +57,14 @@ static void get_children(struct node_list_t* list, struct node_t* node, struct n
  *
  * This helper function finds the best node in the given list by calculating the
  * estimated cost of choosing each node, with the given maze. The index of this
- * node is returned so that the node can be accessed and removed from the list
- * if necessary.
+ * node is returned, and its contents are copied to the given pointer so that
+ * the node can be accessed and removed from the list if necessary.
  *
- * \param [in] frontier
+ * \param [out] best
+ *     The pointer to the node variable which will contain the best node.
+ * \param [in]  frontier
  *     The list of possible candidate nodes.
- * \param [in] maze
+ * \param [in]  maze
  *     The maze that the nodes are contained within.
  *
  * \pre
@@ -71,7 +73,7 @@ static void get_children(struct node_list_t* list, struct node_t* node, struct n
  * \returns
  *     The index of the estimated best node in the list.
  */
-static size_t get_best_node(struct node_list_t frontier, struct maze_t maze);
+static size_t get_best_node(struct node_t* best, struct node_list_t frontier, struct maze_t maze);
 
 
 // Define make_maze (maze.h).
@@ -164,8 +166,7 @@ void solve_maze(struct node_list_t* list, struct maze_t maze)
     for (; frontier.length > 0;)
     {
         // Get the next node to expand.
-        node_index = get_best_node(frontier, maze);
-        node = *get_node(frontier, node_index);
+        node_index = get_best_node(&node, frontier, maze);
 
         // Add the node to the list of out nodes.
         insert_node(list, node, list->length);
@@ -218,27 +219,30 @@ static void get_children(struct node_list_t* list, struct node_t* node, struct n
 }
 
 // Define get_best_node (maze.c).
-static size_t get_best_node(struct node_list_t frontier, struct maze_t maze)
+static size_t get_best_node(struct node_t* best, struct node_list_t frontier, struct maze_t maze)
 {
     // Assert that the frontier is not empty.
     assert(frontier.length > 0);
 
-    // Store the best node index and its estimated cost.
+    // Store the best node, index and its estimated cost.
     size_t best_index = 0;
     size_t best_cost = (size_t) -1;
 
     size_t length = frontier.length;
 
     // Search the nodes for the best node.
+    struct node_t node;
     size_t cost = 0;
     for (size_t index = 0; index < length; index++)
     {
+        node = *get_node(frontier, index);
         // Calculate the estimated cost of choosing the node at this index.
-        cost = location_distance(get_node(frontier, index)->location, maze.start);
+        cost = location_distance(node.location, maze.start);
 
         // If necessary, update the best node.
         if (cost < best_cost)
         {
+            *best = node;
             best_index = index;
             best_cost = cost;
         }
