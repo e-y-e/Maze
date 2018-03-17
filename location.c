@@ -26,16 +26,16 @@ static size_t abs_difference(size_t a, size_t b);
  * \internal
  *
  * Estimates the value of the square root of a given number, starting from a
- * given candidate.
+ * given estimate.
  *
  * This helper function uses the Newton-Raphson approximation to find an
  * approximate value of the square root of the given number, using the given
- * candidate as a starting point for iteration.
+ * estimate as a starting point for iteration.
  *
  * \param [in] y
  *     The number to estimate the square root of.
- * \param [in] candidate
- *     A reasonable starting point for the estimation.
+ * \param [in] x
+ *     A reasonable estimate used as a starting point for the estimation.
  *
  * \pre
  *     If the number is greater than 1, the candidate cannot be zero.
@@ -43,7 +43,7 @@ static size_t abs_difference(size_t a, size_t b);
  * \returns
  *     An estimate of the square root of the given number.
  */
-static size_t estimate_sqrt(size_t y, size_t candidate);
+static size_t estimate_sqrt(size_t y, size_t x);
 
 // Define location_distance (location.h).
 size_t location_distance(struct location_t a, struct location_t b)
@@ -57,7 +57,7 @@ size_t location_distance(struct location_t a, struct location_t b)
     size_t distance_squared = row_distance * row_distance
                             + column_distance * column_distance;
 
-    // The longest axis distance is the best starting point for approximation.
+    // The longest axis distance is a good starting point for approximation.
     size_t candidate = row_distance < column_distance ? column_distance
                                                       : row_distance;
 
@@ -77,22 +77,21 @@ static size_t abs_difference(size_t a, size_t b)
 }
 
 // Define estimate_sqrt (location.c).
-static size_t estimate_sqrt(size_t y, size_t candidate)
+static size_t estimate_sqrt(size_t y, size_t x)
 {
-    size_t x_prime = 0;
-
-    // Avoid dividing by zero.
+    // Special case 0 and 1 as y = sqrt(y).
     if (y < 2) return y;
 
     // Assert that the candidate is not zero.
-    assert(candidate != 0);
+    assert(x != 0);
 
-    // Perform 4 iterations of the Newton-Raphson approximation.
-    for (size_t index = 0; index < 4; index++)
+    // Perform 3 iterations of the Newton-Raphson approximation.
+    size_t x_prime = 0;
+    for (size_t index = 0; index < 3; index++)
     {
-        x_prime = y / candidate;
-        candidate = (candidate + x_prime) / 2;
+        x_prime = y / x;
+        x = (x + x_prime) / 2;
     }
 
-    return candidate;
+    return x;
 }
