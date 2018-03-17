@@ -4,22 +4,33 @@
 
 #include "action.h"
 #include "location.h"
-#include "maze_size.h"
 
 
-struct action_pair_t;
 struct node_list_t;
+
+/**
+ * Represents the size of a rectangular maze.
+ *
+ * This struct is a simple representation of the number of rows and columns that
+ * define the size of a maze. The rows and columns are both unsigned, as they
+ * cannot be negative.
+ */
+struct maze_size_t
+{
+    size_t rows;
+    size_t columns;
+};
 
 /**
  * Represents a maze.
  *
  * This struct contains the properties necessary to find a solution to the maze,
- * specifically a pointer to an array of actions for every location in the maze,
- * along with the size of the maze and its start and end locations.
+ * specifically a pointer to an array of sets of actions for every location in
+ * the maze, along with the size of the maze and its start and end locations.
  */
 struct maze_t
 {
-    struct action_pair_t* actions;
+    struct action_set_pair_t* action_sets;
     struct maze_size_t size;
     struct location_t start;
     struct location_t end;
@@ -52,32 +63,32 @@ struct maze_t
 int make_maze(struct maze_t* maze, struct maze_size_t size, struct location_t start, struct location_t end);
 
 /**
- * Sets the action available at a given location in a maze.
+ * Sets the set of actions available at a given location in a maze.
  *
- * This function simply sets the action available at the given location in the
- * maze by updating the correct entry in the actions array.
+ * This function simply sets the set of actions available at the given location
+ * in the maze by updating the correct entry in the action set array.
  *
  * \param [in,out] maze
- *     The maze variable containing the pointer to the array of actions in which
- *     the action is to be set.
- * \param [in]     action
- *     The action to set.
+ *     The maze variable containing the pointer to the action set array in which
+ *     the set of actions is to be set.
+ * \param [in]     action_set
+ *     The set of actions to set.
  * \param [in]     location
- *     The location in the maze that the action relates to.
+ *     The location in the maze that the set of actions relates to.
  *
  * \pre
  *     The location must be within the maze.
  */
-void set_action(struct maze_t maze, enum action_t action, struct location_t location);
+void set_action_set(struct maze_t maze, enum action_set_t action_set, struct location_t location);
 
 /**
- * Gets the action available at a given location in a maze.
+ * Gets the set of actions available at a given location in a maze.
  *
- * This function simply gets the action available at the given location in the
- * maze by finding the correct entry in the actions array.
+ * This function simply gets the set of actions available at the given location
+ * in the maze by finding the correct entry in the action set array.
  *
  * \param [in] maze
- *     The maze containing the array of actions to get the specified action
+ *     The maze containing the action set array to get the specified action
  *     from.
  * \param [in] location
  *     The location of the specified action.
@@ -86,9 +97,9 @@ void set_action(struct maze_t maze, enum action_t action, struct location_t loca
  *     The location must be within the maze.
  *
  * \returns
- *     The action available at the given location.
+ *     The set of actions available at the given location.
  */
-enum action_t get_action(struct maze_t maze, struct location_t location);
+enum action_set_t get_action_set(struct maze_t maze, struct location_t location);
 
 /**
  * Solves a given maze using A* search.

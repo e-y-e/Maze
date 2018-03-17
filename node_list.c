@@ -123,16 +123,12 @@ bool contains_node(struct node_list_t list, struct location_t location)
     size_t length = list.length;
 
     // Search the list for a node at the given location
-    size_t index = 0;
-    for (;;)
+    for (size_t index = 0; index < length; index++)
     {
-        // Indicate if no node was found.
-        if (index >= length) return false;
-
         // If the node at this index is at the given location, indicate that the
         // node was found.
         if (location_equal(list.nodes[index].location, location)) return true;
-
-        index++;
     }
+
+    return false;
 }

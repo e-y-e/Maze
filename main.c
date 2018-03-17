@@ -43,38 +43,21 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    printf("Solving maze...\n");
     solve_maze(&explored, maze);
 
     size_t length = explored.length;
 
     struct node_t node;
+    for (size_t index = 0; index < length; node = *get_node(explored, index++)) {}
+
     struct location_t location;
-    size_t index = 0;
     for (;;)
     {
-        if (index >= length) break;
-
-        node = *get_node(explored, index);
         location = node.location;
-        printf("Explored node at location { %ld, %ld },\n", location.row, location.column);
-
-        index++;
-    }
-
-    printf("Final path:\n");
-
-    for (;;)
-    {
         printf("{ %ld, %ld }\n", location.row, location.column);
         if (node.parent == NULL) break;
         node = *node.parent;
-        location = node.location;
     }
-
-    printf("Maze:\n");
-
-    write_maze(maze, stdout);
 
     return 0;
 }
