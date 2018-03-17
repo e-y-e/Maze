@@ -155,15 +155,14 @@ void solve_maze(struct node_list_t* list, struct maze_t maze)
     // Assert that the pointer to the node list variable is valid.
     assert(list != NULL);
 
-    // Define the maximum length for lists of nodes in the maze.
-    size_t max_length = maze.size.rows * maze.size.columns;
+    // Define the maximum length for the frontier of nodes in the maze. Based on
+    // the maximum proportion of the area that discovered but unexpanded nodes
+    // can take up.
+    size_t max_length = 2 * maze.size.rows * maze.size.columns / 3;
 
     // Create the list that will contain all nodes in the frontier.
     struct node_list_t frontier;
     if (make_list(&frontier, max_length) != 0) return;
-
-    // Store the index of the next node to expand.
-    size_t node_index = 0;
 
     // Create the node that will represent the current node being explored.
     // Initially this is the end node, as this implementation works backwards.
@@ -172,8 +171,11 @@ void solve_maze(struct node_list_t* list, struct maze_t maze)
     // Insert the end node of the maze into the frontier.
     insert_node(&frontier, &node, 0);
 
+    // Store the index of the next node to expand.
+    size_t node_index = 0;
+
     // Search for the start node, using the given list to store explored nodes.
-    for (; frontier.length > 0;)
+    while (frontier.length > 0)
     {
         // Get the next node to expand.
         node_index = get_best_node(&node, &frontier, maze.start);
@@ -219,7 +221,7 @@ static void get_children(struct node_list_t* list, struct node_t* node, struct n
     child.parent = node;
 
     // Insert the child nodes reachable by each action to the list.
-    for (enum action_t action = (enum action_t) 0; action <= (enum action_t) 3; action++)
+    for (enum action_t action = EAST; action <= NORTH; action++)
     {
         // Check if the action is contained in the set of actions.
         if (!(action_set & (1 << action))) continue;
@@ -243,7 +245,6 @@ static size_t get_best_node(struct node_t* best, struct node_list_t* frontier, s
     assert(frontier != NULL);
     // Assert that the frontier is not empty.
     assert(frontier->length > 0);
-
 
     size_t length = frontier->length;
 
