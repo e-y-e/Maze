@@ -135,6 +135,8 @@ enum action_set_t get_action_set(struct maze_t maze, struct location_t location)
                      : maze.action_sets[index / 2].a;
 }
 
+#include <stdio.h>
+
 // Define solve_maze (maze.h).
 void solve_maze(struct node_list_t* list, struct maze_t maze)
 {
