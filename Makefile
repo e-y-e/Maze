@@ -23,7 +23,8 @@ OPT_CFLAGS := -DNDEBUG -flto -O2 -Rpass=.* -Rpass-missed=.* -Rpass-analysis=.*
 
 
 # Define additional flags for debug build.
-debug: CFLAGS += -Werror -O0 -glldb
+debug: CFLAGS += -fsanitize=address,undefined -Werror -O0 -glldb
+debug: LDFLAGS += -fsanitize=address,undefined
 debug: $(BUILD_DIR)/$(TARGET)
 
 # Define additional flags for profile build.
