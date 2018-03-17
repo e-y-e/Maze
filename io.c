@@ -49,20 +49,21 @@ static int read_location(struct location_t* location, FILE* fp);
 /**
  * \internal
  *
- * Read the actions for a maze from a given file.
+ * Read the sets of actions for a maze from a given file.
  *
- * This helper function attempts to initialize all the actions in the maze based
- * on the data read from the given file.
+ * This helper function attempts to initialize all the action sets in the maze
+ * based on the data read from the given file.
  *
  * \param [in,out] maze
- *     The maze variable containing the pointer to the array of actions to set.
+ *     The maze variable containing the pointer to the action set array to
+ *     initialize.
  * \param [in]     fp
  *     The file handle to read data from.
  *
  * \returns
  *     -1 on failure, 0 on success.
  */
-static int read_actions(struct maze_t maze, FILE* fp);
+static int read_action_sets(struct maze_t maze, FILE* fp);
 
 
 // Define read_maze (io.h)
@@ -92,7 +93,7 @@ int read_maze(struct maze_t* maze, FILE* fp)
     make_maze(maze, size, start, end);
 
     // Read the actions of the maze.
-    read_actions(*maze, fp);
+    read_action_sets(*maze, fp);
 
     return 0;
 }
@@ -112,24 +113,17 @@ int write_maze(struct maze_t maze, FILE* fp)
     size_t row = 0;
     size_t column = 0;
 
-    for (;;)
+    for (; row < rows; row++)
     {
-        if (row >= rows) break;
-
         // Write the north walls and north-east corners of this row to the file.
-        column = 0;
-        for (;;)
+        for (column = 0; column < columns; column++)
         {
-            if (column >= columns) break;
-
-            walls = ~get_action(maze, (struct location_t) { row, column })
+            walls = ~get_action_set(maze, (struct location_t) { row, column })
                   & 0x0F;
 
             fprintf_result = fprintf(fp,
                 walls & 0x08 ? "####" : (walls & 0x04 ? "#   " : "    "));
             if (fprintf_result != 4) return -1;
-
-            column++;
         }
 
         // Write out any extra characters for the north-west corner of this row,
@@ -143,7 +137,7 @@ int write_maze(struct maze_t maze, FILE* fp)
         {
             if (column >= columns) break;
 
-            walls = ~get_action(maze, (struct location_t) { row, column })
+            walls = ~get_action_set(maze, (struct location_t) { row, column })
                   & 0x0F;
 
             fprintf_result = fprintf(fp, walls & 0x04 ? "#   " : "    ");
@@ -156,25 +150,18 @@ int write_maze(struct maze_t maze, FILE* fp)
         // followed by the end of the line.
         fprintf_result = fprintf(fp, walls & 0x01 ? "#\n" : " \n");
         if (fprintf_result != 2) return -1;
-
-        row++;
     }
 
     // Write the south walls and south-east corners of the final row of the maze to the file.
-    column = 0;
-    for (;;)
+    for (column = 0; column < columns; column++)
     {
-        if (column >= columns) break;
-
-        walls = ~get_action(maze, (struct location_t) { row - 1, column })
+        walls = ~get_action_set(maze, (struct location_t) { row - 1, column })
               & 0x0F;
 
         fprintf_result = fprintf(fp, walls & 0x02 ? "####"
                                                   : (walls & 0x04 ? "#   "
                                                                   : "    "));
         if (fprintf_result != 4) return -1;
-
-        column++;
     }
 
     // Write out any extra characters for the south-east corner of the maze,
@@ -238,8 +225,8 @@ static int read_location(struct location_t* location, FILE* fp)
     return 0;
 }
 
-// Define read_actions (io.c).
-static int read_actions(struct maze_t maze, FILE* fp)
+// Define read_action_sets (io.c).
+static int read_action_sets(struct maze_t maze, FILE* fp)
 {
     size_t rows = maze.size.rows;
     size_t columns = maze.size.columns;
@@ -254,35 +241,28 @@ static int read_actions(struct maze_t maze, FILE* fp)
     // Iterate through the maze, setting the action at each location.
     size_t row = 0;
     size_t column = 0;
-    for (;;)
+    for (; row < rows; row++)
     {
-        if (row >= rows) return 0;
-
         // If there are no lines left to read, indicate an error.
         if (feof(fp)) return -1;
 
         // Attempt to read a line, indicate an error on failure or buffer
         // overflow.
-        end_ptr = fgets(line, 512, fp);
+        end_ptr = fgets(line, 4096, fp);
         if (end_ptr == NULL || strchr(end_ptr, '\n') == NULL) return -1;
 
-        column = 0;
-        for (;;)
+        for (column = 0; column < columns; column++)
         {
-            if (column >= columns) break;
-
             // Convert the next number to the specification for the walls at
             // this location.
             walls = strtoul(end_ptr, &end_ptr, 10);
 
-            // Based on the specification for the walls, set the action at this
-            // location.
-            set_action(maze, (enum action_t) (~walls & 0xF),
-                       (struct location_t) { row, column });
-
-            column++;
+            // Based on the specification for the walls, set the set of actions
+            // at this location.
+            set_action_set(maze, (enum action_set_t) (~walls & 0xF),
+                           (struct location_t) { row, column });
         }
-
-        row++;
     }
+
+    return 0;
 }

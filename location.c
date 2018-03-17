@@ -38,11 +38,9 @@ size_t location_distance(struct location_t a, struct location_t b)
                                                       : row_distance;
 
     // Approximate the distance by iterating through candidate solutions.
-    for (;;)
-    {
-        if (candidate * candidate >= distance_squared) return candidate;
-        candidate++;
-    }
+    for (; candidate * candidate < distance_squared; candidate++) {}
+
+    return candidate;
 }
 
 // Define location_equal (location.h).

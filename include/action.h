@@ -5,18 +5,17 @@
 struct location_t;
 
 /**
- * Represents the action available at a node in a maze.
+ * Represents a single action available at a node in a maze.
  *
  * This enumerated type provides representations for the directions in which a
- * node can be expanded. These representations allow multiple directions to be
- * combined using simple bitwise operations.
+ * node can be expanded.
  */
 enum action_t
 {
-    NORTH = (1 << 3),
-    WEST  = (1 << 2),
-    SOUTH = (1 << 1),
-    EAST  = (1 << 0)
+    EAST  = 0,
+    SOUTH = 1,
+    WEST  = 2,
+    NORTH = 3
 };
 
 /**
@@ -25,9 +24,7 @@ enum action_t
  *
  * This function simply calculates what the resulting location would be when the
  * given action is taken by adding or subtracting a unit length on the relevant
- * axis from the given location. Note that the action should only represent one
- * direction, otherwise the behaviour of this function is to return the original
- * location.
+ * axis from the given location.
  *
  * \param [in] location
  *     The original location before the action is taken.
@@ -39,6 +36,40 @@ enum action_t
  *     location.
  */
 struct location_t action_result(struct location_t location, enum action_t action);
+
+/**
+ * Represents the set of actions available at a node in a maze.
+ *
+ * This enumerated type provides representations for the directions in which a
+ * node can be expanded. These representations allow multiple directions to be
+ * combined into a set of actions using simple bitwise operations.
+ */
+enum action_set_t
+{
+    EAST_FLAG  = 1 << EAST,
+    SOUTH_FLAG = 1 << SOUTH,
+    WEST_FLAG  = 1 << WEST,
+    NORTH_FLAG = 1 << NORTH
+};
+
+#pragma pack(push)
+#pragma pack(1)
+
+/**
+ * Combines two action set types into a single byte-aligned struct.
+ *
+ * This struct utilises bitfields to combine two action sets which each only
+ * require 4 bits to represent. To avoid the compiler padding the representation
+ * of this struct to the alignment boundary (usually 4 bytes), compiler
+ * directives must be utilised.
+ */
+struct action_set_pair_t
+{
+    enum action_set_t a : 4;
+    enum action_set_t b : 4;
+};
+
+#pragma pack(pop)
 
 
 #endif // ACTION_H
