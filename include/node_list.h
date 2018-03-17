@@ -72,17 +72,19 @@ int resize_list(struct node_list_t* list, size_t new_capacity);
  * pointer to the node at that index.
  *
  * \param [in] list
- *     The node list.
+ *     A pointer to the node list.
  * \param [in] index
  *     The index of the node.
  *
+ * \pre
+ *     The pointer to the node list variable should not be NULL.
  * \pre
  *     The index must be within the length of the given list.
  *
  * \returns
  *     A pointer to the node at the given index.
  */
-struct node_t* get_node(struct node_list_t list, size_t index);
+struct node_t* get_node(struct node_list_t* list, size_t index);
 
 /**
  * Inserts a node into a node list at a given index.
@@ -95,7 +97,7 @@ struct node_t* get_node(struct node_list_t list, size_t index);
  * \param [in,out] list
  *     A pointer to the node list to insert the node into.
  * \param [in]     node
- *     The node to insert.
+ *     A pointer to the node to insert.
  * \param [in]     index
  *     The index to insert the node at.
  *
@@ -108,7 +110,7 @@ struct node_t* get_node(struct node_list_t list, size_t index);
  * \returns
  *     -1 on failure, 0 on success.
  */
-int insert_node(struct node_list_t* list, struct node_t node, size_t index);
+int insert_node(struct node_list_t* list, struct node_t* node, size_t index);
 
 /**
  * Removes the node at a given index in a node list.
@@ -137,14 +139,17 @@ void remove_node(struct node_list_t* list, size_t index);
  * able to find one.
  *
  * \param [in] list
- *     The node list that will be searched.
+ *     A pointer to the node list that will be searched.
  * \param [in] location
  *     The location of the node to be found.
+ *
+ * \pre
+ *     The pointer to the node list variable should not be NULL.
  *
  * \returns
  *     Whether there is a node with the given location in the list.
  */
-bool contains_node(struct node_list_t list, struct location_t location);
+bool contains_node(struct node_list_t* list, struct location_t location);
 
 /**
  * Tests the type node_list_t and its associated functions.

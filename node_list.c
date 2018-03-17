@@ -48,16 +48,18 @@ int resize_list(struct node_list_t* list, size_t new_capacity)
 }
 
 // Define get_node (node_list.h).
-struct node_t* get_node(struct node_list_t list, size_t index)
+struct node_t* get_node(struct node_list_t* list, size_t index)
 {
+    // Assert that the pointer to the node list variable is valid.
+    assert(list != NULL);
     // Assert that the index cannot be past the end of the list.
-    assert(index < list.length);
+    assert(index < list->length);
 
-    return &list.nodes[index];
+    return &list->nodes[index];
 }
 
 // Define insert_node (node_list.h).
-int insert_node(struct node_list_t* list, struct node_t node, size_t index)
+int insert_node(struct node_list_t* list, struct node_t* node, size_t index)
 {
     // Assert that the pointer to the node list variable is valid.
     assert(list != NULL);
@@ -83,7 +85,7 @@ int insert_node(struct node_list_t* list, struct node_t node, size_t index)
     memmove(insert_ptr + sizeof(struct node_t), insert_ptr, (list->length - index) * sizeof(struct node_t));
 
     // Insert the node into the list using direct memcpy.
-    memcpy(insert_ptr, (char*) &node, sizeof(struct node_t));
+    memcpy(insert_ptr, (char*) node, sizeof(struct node_t));
 
     // Update list length to reflect additional node.
     list->length++;
@@ -118,16 +120,19 @@ void remove_node(struct node_list_t* list, size_t index)
 }
 
 // Define contains_node (node_list.h)
-bool contains_node(struct node_list_t list, struct location_t location)
+bool contains_node(struct node_list_t* list, struct location_t location)
 {
-    size_t length = list.length;
+    // Assert that the pointer to the node list variable is valid.
+    assert(list != NULL);
+
+    size_t length = list->length;
 
     // Search the list for a node at the given location
     for (size_t index = 0; index < length; index++)
     {
         // If the node at this index is at the given location, indicate that the
         // node was found.
-        if (location_equal(list.nodes[index].location, location)) return true;
+        if (location_equal(list->nodes[index].location, location)) return true;
     }
 
     return false;

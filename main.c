@@ -48,7 +48,7 @@ int main(int argc, char** argv)
     size_t length = explored.length;
 
     struct node_t node;
-    for (size_t index = 0; index < length; node = *get_node(explored, index++)) {}
+    for (size_t index = 0; index < length; node = *get_node(&explored, index++)) {}
 
     struct location_t location;
     for (;;)

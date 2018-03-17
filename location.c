@@ -1,5 +1,7 @@
 #include "location.h"
 
+#include <assert.h>
+
 
 /**
  * \internal
@@ -20,6 +22,28 @@
  */
 static size_t abs_difference(size_t a, size_t b);
 
+/**
+ * \internal
+ *
+ * Estimates the value of the square root of a given number, starting from a
+ * given candidate.
+ *
+ * This helper function uses the Newton-Raphson approximation to find an
+ * approximate value of the square root of the given number, using the given
+ * candidate as a starting point for iteration.
+ *
+ * \param [in] y
+ *     The number to estimate the square root of.
+ * \param [in] candidate
+ *     A reasonable starting point for the estimation.
+ *
+ * \pre
+ *     If the number is greater than 1, the candidate cannot be zero.
+ *
+ * \returns
+ *     An estimate of the square root of the given number.
+ */
+static size_t estimate_sqrt(size_t y, size_t candidate);
 
 // Define location_distance (location.h).
 size_t location_distance(struct location_t a, struct location_t b)
@@ -37,10 +61,7 @@ size_t location_distance(struct location_t a, struct location_t b)
     size_t candidate = row_distance < column_distance ? column_distance
                                                       : row_distance;
 
-    // Approximate the distance by iterating through candidate solutions.
-    for (; candidate * candidate < distance_squared; candidate++) {}
-
-    return candidate;
+    return estimate_sqrt(distance_squared, candidate);
 }
 
 // Define location_equal (location.h).
@@ -53,4 +74,25 @@ bool location_equal(struct location_t a, struct location_t b)
 static size_t abs_difference(size_t a, size_t b)
 {
     return a < b ? b - a : a - b;
+}
+
+// Define estimate_sqrt (location.c).
+static size_t estimate_sqrt(size_t y, size_t candidate)
+{
+    size_t x_prime = 0;
+
+    // Avoid dividing by zero.
+    if (y < 2) return y;
+
+    // Assert that the candidate is not zero.
+    assert(candidate != 0);
+
+    // Perform 4 iterations of the Newton-Raphson approximation.
+    for (size_t index = 0; index < 4; index++)
+    {
+        x_prime = y / candidate;
+        candidate = (candidate + x_prime) / 2;
+    }
+
+    return candidate;
 }
