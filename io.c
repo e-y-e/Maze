@@ -1,7 +1,8 @@
 #include "io.h"
 
-#include "action.h"
 #include "location.h"
+#include "maze_size.h"
+#include "action_set.h"
 #include "maze.h"
 
 #include <assert.h>

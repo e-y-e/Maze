@@ -1,31 +1,12 @@
 #include "maze.h"
 
-#include "location.h"
+#include "action.h"
 #include "node.h"
 #include "node_list.h"
 
 #include <assert.h>
 #include <stdlib.h>
 
-
-/**
- * \internal
- *
- * Checks if a given location is within a maze of a given size.
- *
- * This helper function simply compares the given location with the number of
- * rows and columns in the maze, and determines whether the location is within
- * its bounds.
- *
- * \param [in] size
- *     The size of the maze in which the location should be.
- * \param [in] location
- *     The location to check.
- *
- * \returns
- *     Whether the given location is within a maze of the given size.
- */
-static bool check_location(struct maze_size_t size, struct location_t location);
 
 /**
  * \internal
@@ -184,12 +165,6 @@ void solve_maze(struct node_list_t* list, struct maze_t maze)
         // frontier.
         get_children(&frontier, get_node(list, list->length - 1), list, maze);
     }
-}
-
-// Define check_location (maze.c).
-static bool check_location(struct maze_size_t size, struct location_t location)
-{
-    return location.row < size.rows && location.column < size.columns;
 }
 
 // Define get_children (maze.c).

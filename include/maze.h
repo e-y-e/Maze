@@ -2,24 +2,12 @@
 #define MAZE_H
 
 
-#include "action.h"
 #include "location.h"
+#include "maze_size.h"
+#include "action_set.h"
 
 
 struct node_list_t;
-
-/**
- * Represents the size of a rectangular maze.
- *
- * This struct is a simple representation of the number of rows and columns that
- * define the size of a maze. The rows and columns are both unsigned, as they
- * cannot be negative.
- */
-struct maze_size_t
-{
-    size_t rows;
-    size_t columns;
-};
 
 /**
  * Represents a maze.
