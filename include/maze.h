@@ -112,15 +112,5 @@ enum action_set_t get_action_set(struct maze_t maze, struct location_t location)
  */
 void solve_maze(struct node_list_t* list, struct maze_t maze);
 
-/**
- * Tests the function solve_maze().
- *
- * This function runs through a series of test cases defined in the file
- * test.txt. The test cases are each a 5x5 maze, some of which have no solution.
- * The function asserts that for those with a solution, the solve_maze()
- * function provides a complete path from start to finish.
- */
-void test_solve_maze(void);
-
 
 #endif // MAZE_H

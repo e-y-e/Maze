@@ -151,15 +151,5 @@ void remove_node(struct node_list_t* list, size_t index);
  */
 bool contains_node(struct node_list_t* list, struct location_t location);
 
-/**
- * Tests the type node_list_t and its associated functions.
- *
- * This function runs through constructing and using node lists of varying
- * sizes, and inserts nodes at various indexes, asserting that the nodes are in
- * the right position. The remove_node() function and the contains_node()
- * function are also tested with some simple inputs.
- */
-void test_node_list(void);
-
 
 #endif // NODE_LIST_H
