@@ -98,16 +98,16 @@ int make_maze(struct maze_t* maze, struct maze_size_t size, struct location_t st
     assert(check_location(size, end));
 
     // Find the length of the array needed to store action sets for each node.
-    size_t length = (size.rows * size.columns + 1) / 2;
+    size_t length = size.rows * size.columns;
 
     // Allocate the memory required for the array.
-    void* ptr = calloc(length, sizeof(struct action_set_pair_t));
+    void* ptr = calloc(length, sizeof(enum action_set_t));
 
     // Indicate failure if allocation failed.
     if (ptr == NULL) return -1;
 
     // Initialize maze properties.
-    maze->action_sets = (struct action_set_pair_t*) ptr;
+    maze->action_sets = (enum action_set_t*) ptr;
     maze->size = size;
     maze->start = start;
     maze->end = end;
@@ -124,15 +124,7 @@ void set_action_set(struct maze_t maze, enum action_set_t action_set, struct loc
     // Find the index to the action set based on the location.
     size_t index = location.row * maze.size.columns + location.column;
 
-    // Set the correct action set in the pair of action sets.
-    if (index & 1)
-    {
-        maze.action_sets[index / 2].b = action_set;
-    }
-    else
-    {
-        maze.action_sets[index / 2].a = action_set;
-    }
+    maze.action_sets[index] = action_set;
 }
 
 // Define get_action_set (maze.h).
@@ -144,9 +136,8 @@ enum action_set_t get_action_set(struct maze_t maze, struct location_t location)
     // Find the index to the action set based on the location.
     size_t index = location.row * maze.size.columns + location.column;
 
-    // Get the correct action set from the pair of action sets
-    return index & 1 ? maze.action_sets[index / 2].b
-                     : maze.action_sets[index / 2].a;
+    // Get the correct action set.
+    return maze.action_sets[index];
 }
 
 // Define solve_maze (maze.h).

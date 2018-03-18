@@ -30,7 +30,7 @@ struct maze_size_t
  */
 struct maze_t
 {
-    struct action_set_pair_t* action_sets;
+    enum action_set_t* action_sets;
     struct maze_size_t size;
     struct location_t start;
     struct location_t end;

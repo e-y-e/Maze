@@ -52,24 +52,5 @@ enum action_set_t
     NORTH_FLAG = 1 << NORTH
 };
 
-#pragma pack(push)
-#pragma pack(1)
-
-/**
- * Combines two action set types into a single byte-aligned struct.
- *
- * This struct utilises bitfields to combine two action sets which each only
- * require 4 bits to represent. To avoid the compiler padding the representation
- * of this struct to the alignment boundary (usually 4 bytes), compiler
- * directives must be utilised.
- */
-struct action_set_pair_t
-{
-    enum action_set_t a : 4;
-    enum action_set_t b : 4;
-};
-
-#pragma pack(pop)
-
 
 #endif // ACTION_H
