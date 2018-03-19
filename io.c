@@ -132,18 +132,13 @@ int write_maze(struct maze_t maze, FILE* fp)
         if (fprintf_result != 2) return -1;
 
         // Write the east walls of this row to the file.
-        column = 0;
-        for (;;)
+        for (column = 0; column < columns; column++)
         {
-            if (column >= columns) break;
-
             walls = ~get_action_set(maze, (struct location_t) { row, column })
                   & 0x0F;
 
             fprintf_result = fprintf(fp, walls & 0x04 ? "#   " : "    ");
             if (fprintf_result != 4) return -1;
-
-            column++;
         }
 
         // Write out any extra characters for the east wall of this row,
