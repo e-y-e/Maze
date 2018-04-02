@@ -1,6 +1,7 @@
 #include "io.h"
 
 #include "location.h"
+#include "node.h"
 #include "maze_size.h"
 #include "action_set.h"
 #include "maze.h"
@@ -65,6 +66,18 @@ static int read_location(struct location_t* location, FILE* fp);
  */
 static int read_action_sets(struct maze_t maze, FILE* fp);
 
+/**
+ * \internal
+ *
+ * Convert the given action into a printable character.
+ *
+ * \param [in] action
+ *     The given action.
+ *
+ * \returns
+ *     A printable character representing the given action.
+ */
+static char action_char(enum action_t action);
 
 // Define read_maze (io.h)
 int read_maze(struct maze_t* maze, FILE* fp)
@@ -167,6 +180,36 @@ int write_maze(struct maze_t maze, FILE* fp)
     return 0;
 }
 
+// Define write_path (io.h).
+int write_path(struct node_t* start, FILE* fp)
+{
+    // Assert that the pointer to the node variable is valid.
+    assert(start != NULL);
+    // Assert that the file handle is valid.
+    assert(fp != NULL);
+
+    struct node_t node = *start;
+    enum action_t action;
+
+    int fputc_result = 0;
+    int action_taken_result = 0;
+
+    for (;;)
+    {
+        if (node.parent == NULL) break;
+
+        action_taken_result = action_taken(&action, node.location, node.parent->location);
+        if (action_taken_result != 0) return action_taken_result;
+
+        fputc_result = fputc(action_char(action), fp);
+        if (fputc_result == EOF) return EOF;
+
+        node = *node.parent;
+    }
+
+    return 0;
+}
+
 // Define read_size (io.c).
 static int read_size(struct maze_size_t* size, FILE* fp)
 {
@@ -260,4 +303,16 @@ static int read_action_sets(struct maze_t maze, FILE* fp)
     }
 
     return 0;
+}
+
+// Define action_char (io.c).
+char action_char(enum action_t action)
+{
+    switch (action)
+    {
+        case EAST : return 'E';
+        case SOUTH: return 'S';
+        case WEST : return 'W';
+        case NORTH: return 'N';
+    }
 }

@@ -50,14 +50,19 @@ int main(int argc, char** argv)
     struct node_t node;
     for (size_t index = 0; index < length; node = *get_node(&explored, index++)) {}
 
-    struct location_t location;
-    for (;;)
-    {
-        location = node.location;
-        printf("{ %ld, %ld }\n", location.row, location.column);
-        if (node.parent == NULL) break;
-        node = *node.parent;
-    }
+//     struct location_t location;
+//     for (;;)
+//     {
+//         location = node.location;
+//         printf("{ %ld, %ld }\n", location.row, location.column);
+//         if (node.parent == NULL) break;
+//         node = *node.parent;
+//     }
+
+    FILE* fp2 = fopen("out.txt", "w");
+
+    write_path(&node, fp2);
+    fclose(fp2);
 
     return 0;
 }

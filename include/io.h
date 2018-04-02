@@ -6,6 +6,7 @@
 
 
 struct maze_t;
+struct node_t;
 
 /**
  * Reads the contents of a file as a maze.
@@ -73,6 +74,28 @@ int read_maze(struct maze_t* maze, FILE* fp);
  *     -1 on failure, 0 on success.
  */
 int write_maze(struct maze_t maze, FILE* fp);
+
+/**
+ * Writes the actions taken in a given path to a file.
+ *
+ * This function follows the parent nodes of the start node to reconstruct the
+ * actions taken to get from the start node in a maze to the end node. These
+ * actions are then written to the given file.
+ *
+ * \param [in] start
+ *     The start node of the solved path.
+ * \param [in] fp
+ *     The file handle to write the path to.
+ *
+ * \pre
+ *     The pointer to the start node must not be NULL.
+ * \pre
+ *     The file pointer must not be NULL.
+ *
+ * \returns
+ *     -1 on failure, 0 on success.
+ */
+int write_path(struct node_t* start, FILE* fp);
 
 
 #endif // IO_H
