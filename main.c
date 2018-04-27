@@ -1,4 +1,6 @@
+#include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "location.h"
 #include "node.h"
@@ -6,16 +8,34 @@
 #include "maze.h"
 #include "io.h"
 
+#ifndef TEST
 
 int main(int argc, char** argv)
 {
     if (argc == 1)
     {
-        printf("Provide the name of the file\n");
+        printf("Usage: maze [-p] input_file output_file\n");
         return -1;
     }
 
-    char* filename = argv[1];
+    bool print = false;
+    size_t arg_offset = 0;
+
+    char* arg = argv[1];
+    if (strncmp(arg, "-p", 2) != 0)
+    {
+        print = true;
+        arg_offset = 1;
+    }
+
+    if ((size_t) argc < arg_offset + 3)
+    {
+        printf("Usage: maze [-p] input_file output_file\n");
+        return -1;
+    }
+
+    char* filename = argv[arg_offset + 1];
+
     FILE* fp = fopen(filename, "r");
 
     if (fp == NULL)
@@ -66,3 +86,5 @@ int main(int argc, char** argv)
 
     return 0;
 }
+
+#endif // TEST

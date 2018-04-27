@@ -71,7 +71,7 @@ int insert_node(struct node_list_t* list, struct node_t* node, size_t index)
     if (list->length >= list->capacity)
     {
         // Resize according to 2 * previous capacity.
-        size_t new_capacity = list->capacity == 0 ? 1 : list->capacity * 2;
+        size_t new_capacity = (list->capacity == 0) ? 1 : list->capacity * 2;
         int resize_result = resize_list(list, new_capacity);
 
         // Indicate failure if resize failed.

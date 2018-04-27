@@ -207,6 +207,27 @@ int write_path(struct node_t* start, FILE* fp)
         node = *node.parent;
     }
 
+    // Read the contents of the file back into memory.
+    long int endpos = ftell(fp);
+    if (endpos < 0) return (int) endpos;
+
+    size_t length = (size_t) endpos;
+
+    rewind(fp);
+
+    char* buf = (char*) malloc((length + 1) * sizeof(char));
+    if (buf == NULL) return -1;
+
+    if (fread((void*) buf, sizeof(char), length, fp) < length) return -1;
+    buf[length] = '\0';
+
+    // Rewrite the contents of the file including the number of actions taken.
+
+    rewind(fp);
+
+    fprintf(fp, "%ld\n", length);
+    fprintf(fp, "%s\n", buf);
+
     return 0;
 }
 
@@ -310,9 +331,9 @@ char action_char(enum action_t action)
 {
     switch (action)
     {
-        case EAST : return 'E';
-        case SOUTH: return 'S';
-        case WEST : return 'W';
-        case NORTH: return 'N';
+        case EAST : return 'R';
+        case SOUTH: return 'D';
+        case WEST : return 'L';
+        case NORTH: return 'U';
     }
 }
